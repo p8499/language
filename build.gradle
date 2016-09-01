@@ -1,0 +1,48 @@
+buildscript
+{	repositories
+	{	jcenter()
+	}
+	dependencies
+	{	classpath 'com.bmuschko:gradle-cargo-plugin:2.2.3'
+	}
+}
+
+apply plugin: 'war'
+apply plugin: 'com.bmuschko.cargo'
+apply plugin: 'eclipse'
+
+repositories
+{	mavenCentral()
+}
+
+dependencies
+{	providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+	
+	runtime 'log4j:log4j:1.2.17'
+	runtime 'org.hibernate:hibernate-validator:5.2.4.Final'
+	runtime 'org.apache.commons:commons-pool2:2.4.2'
+	runtime 'commons-logging:commons-logging:1.2'
+	runtime 'org.apache.commons:commons-dbcp2:2.1.1'
+	runtime 'org.mybatis:mybatis-spring:1.3.0'
+	runtime 'org.springframework:spring-jdbc:4.3.2.RELEASE'
+	runtime 'org.postgresql:postgresql:9.4.1209'
+
+	compile 'javax.validation:validation-api:1.1.0.Final'
+	compile 'org.springframework:spring-webmvc:4.3.2.RELEASE'
+	compile 'org.mybatis:mybatis:3.4.1'
+	compile 'com.fasterxml.jackson.core:jackson-core:2.8.1'
+	compile 'com.fasterxml.jackson.core:jackson-databind:2.8.1'
+	compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.1'
+	compile files('../p8499mvc/build/libs/p8499mvc.jar')
+}
+
+cargo
+{	containerId='tomcat8x'
+	port=8080
+	remote
+	{	hostname='localhost'
+		username='jdeuser'
+		password='helloJDE'
+		
+	}
+}
