@@ -18,11 +18,9 @@ public interface AuthorityMapper extends BeanMapper<Authority,String>
 	public boolean exists(@Param("auid")String auid);
 	
 	@Override
-	@Select("SELECT AUID,AUGRP,AUNAME FROM public.F0320 WHERE AUID=#{auid}")
-	public Authority get(@Param("auid")String auid);
-	
-	@Override
 	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<if test='mask.auid or mask.augrp or mask.auname'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.auid'>AUID, </if>"
@@ -31,19 +29,22 @@ public interface AuthorityMapper extends BeanMapper<Authority,String>
 		+ "</trim>"
 		+ "FROM public.F0320 WHERE AUID=#{auid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT AUID,AUGRP,AUNAME FROM public.F0320 WHERE AUID=#{auid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Authority getWithMask(@Param("auid")String auid,@Param("mask")Mask mask);
+	public Authority get(@Param("auid")String auid,@Param("mask")Mask mask);
 	
 	@Override
 	@Insert("INSERT INTO public.F0320 (AUID,AUGRP,AUNAME) VALUES (#{bean.auid},#{bean.augrp},#{bean.auname})")
 	public void add(@Param("bean")Authority bean);
 	
 	@Override
-	@Update("UPDATE public.F0320 SET AUGRP=#{bean.augrp},AUNAME=#{bean.auname} WHERE AUID=#{bean.auid}")
-	public void update(@Param("bean")Authority bean);
-	
-	@Override
 	@Update("<script>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
 		+ "<if test='mask.augrp or mask.auname'>"
 		+ "UPDATE public.F0320 "
 		+ "<set>"
@@ -52,8 +53,13 @@ public interface AuthorityMapper extends BeanMapper<Authority,String>
 		+ "</set>"
 		+ "WHERE AUID=#{bean.auid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F0320 SET AUGRP=#{bean.augrp},AUNAME=#{bean.auname} WHERE AUID=#{bean.auid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Authority bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Authority bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F0320 WHERE AUID=#{auid}")
@@ -61,26 +67,24 @@ public interface AuthorityMapper extends BeanMapper<Authority,String>
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT AUID,AUGRP,AUNAME FROM public.F0320 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Authority> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.auid'>AUID, </if>"
 		+ "<if test='mask.augrp'>AUGRP, </if>"
 		+ "<if test='mask.auname'>AUNAME, </if>"
 		+ "</trim>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT AUID,AUGRP,AUNAME "
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "FROM public.F0320 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Authority> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Authority> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"

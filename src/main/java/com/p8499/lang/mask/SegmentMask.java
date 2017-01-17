@@ -23,6 +23,17 @@ public class SegmentMask implements Mask
 	public SegmentMask()
 	{	
 	}
+	@Override
+	public SegmentMask all(boolean b)
+	{	this.trasid=b;
+		this.trpi=b;
+		this.trhz=b;
+		this.trst=b;
+		this.trusid=b;
+		this.trupdd=b;
+		this.trupdt=b;
+	return this;
+	}
 	public boolean getTrasid()
 	{	return trasid;
 	}

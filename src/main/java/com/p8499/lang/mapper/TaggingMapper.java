@@ -18,11 +18,9 @@ public interface TaggingMapper extends BeanMapper<Tagging,Integer>
 	public boolean exists(@Param("tgasid")Integer tgasid);
 	
 	@Override
-	@Select("SELECT TGASID,TGCONT,TGST,TGUSID,TGUPDD,TGUPDT FROM public.F1140 WHERE TGASID=#{tgasid}")
-	public Tagging get(@Param("tgasid")Integer tgasid);
-	
-	@Override
 	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<if test='mask.tgasid or mask.tgcont or mask.tgst or mask.tgusid or mask.tgupdd or mask.tgupdt'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.tgasid'>TGASID, </if>"
@@ -34,19 +32,22 @@ public interface TaggingMapper extends BeanMapper<Tagging,Integer>
 		+ "</trim>"
 		+ "FROM public.F1140 WHERE TGASID=#{tgasid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT TGASID,TGCONT,TGST,TGUSID,TGUPDD,TGUPDT FROM public.F1140 WHERE TGASID=#{tgasid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Tagging getWithMask(@Param("tgasid")Integer tgasid,@Param("mask")Mask mask);
+	public Tagging get(@Param("tgasid")Integer tgasid,@Param("mask")Mask mask);
 	
 	@Override
 	@Insert("INSERT INTO public.F1140 (TGASID,TGCONT,TGST,TGUSID,TGUPDD,TGUPDT) VALUES (#{bean.tgasid},#{bean.tgcont},#{bean.tgst},#{bean.tgusid},#{bean.tgupdd},#{bean.tgupdt})")
 	public void add(@Param("bean")Tagging bean);
 	
 	@Override
-	@Update("UPDATE public.F1140 SET TGCONT=#{bean.tgcont},TGST=#{bean.tgst},TGUSID=#{bean.tgusid},TGUPDD=#{bean.tgupdd},TGUPDT=#{bean.tgupdt} WHERE TGASID=#{bean.tgasid}")
-	public void update(@Param("bean")Tagging bean);
-	
-	@Override
 	@Update("<script>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
 		+ "<if test='mask.tgcont or mask.tgst or mask.tgusid or mask.tgupdd or mask.tgupdt'>"
 		+ "UPDATE public.F1140 "
 		+ "<set>"
@@ -58,8 +59,13 @@ public interface TaggingMapper extends BeanMapper<Tagging,Integer>
 		+ "</set>"
 		+ "WHERE TGASID=#{bean.tgasid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F1140 SET TGCONT=#{bean.tgcont},TGST=#{bean.tgst},TGUSID=#{bean.tgusid},TGUPDD=#{bean.tgupdd},TGUPDT=#{bean.tgupdt} WHERE TGASID=#{bean.tgasid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Tagging bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Tagging bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F1140 WHERE TGASID=#{tgasid}")
@@ -67,15 +73,8 @@ public interface TaggingMapper extends BeanMapper<Tagging,Integer>
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT TGASID,TGCONT,TGST,TGUSID,TGUPDD,TGUPDT FROM public.F1140 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Tagging> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.tgasid'>TGASID, </if>"
 		+ "<if test='mask.tgcont'>TGCONT, </if>"
@@ -84,12 +83,17 @@ public interface TaggingMapper extends BeanMapper<Tagging,Integer>
 		+ "<if test='mask.tgupdd'>TGUPDD, </if>"
 		+ "<if test='mask.tgupdt'>TGUPDT, </if>"
 		+ "</trim>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT TGASID,TGCONT,TGST,TGUSID,TGUPDD,TGUPDT "
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "FROM public.F1140 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Tagging> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Tagging> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"
@@ -104,16 +108,16 @@ public interface TaggingMapper extends BeanMapper<Tagging,Integer>
 	
 	@Override
 	@Select("SELECT SUM(C)>0 FROM( "
-		+ "SELECT COUNT(*) C FROM public.F1120 WHERE ASID=#{bean.tgasid} "
-		+ "UNION ALL SELECT COUNT(*) C FROM public.F0301 WHERE USID=#{bean.tgusid} "
+		+ "SELECT COUNT(*) C FROM public.F0301 WHERE USID=#{bean.tgusid} "
+		+ "UNION ALL SELECT COUNT(*) C FROM public.V1120 WHERE ASID=#{bean.tgasid} "
 		+ ") T")
 	public boolean referencing(@Param("bean")Tagging bean);
 	
-	@Select("SELECT COUNT(*)>0 FROM public.F1120 WHERE ASID=#{tgasid}")
-	public boolean referencingTgasid(@Param("tgasid")Integer tgasid);
-	
 	@Select("SELECT COUNT(*)>0 FROM public.F0301 WHERE USID=#{tgusid}")
 	public boolean referencingTgusid(@Param("tgusid")String tgusid);
+	
+	@Select("SELECT COUNT(*)>0 FROM public.V1120 WHERE ASID=#{tgasid}")
+	public boolean referencingTgasid(@Param("tgasid")Integer tgasid);
 	
 	@Override
 	@Select("SELECT 1")

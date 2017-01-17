@@ -8,20 +8,31 @@ public class SegmentvoteMask implements Mask
 	protected boolean tvsi=false;
 	protected boolean tvusid=false;
 	protected boolean tvpo=false;
-	protected boolean taupdd=false;
-	protected boolean taupdt=false;
+	protected boolean tvupdd=false;
+	protected boolean tvupdt=false;
 
-	public SegmentvoteMask(boolean tvid,boolean tvtaid,boolean tvsi,boolean tvusid,boolean tvpo,boolean taupdd,boolean taupdt)
+	public SegmentvoteMask(boolean tvid,boolean tvtaid,boolean tvsi,boolean tvusid,boolean tvpo,boolean tvupdd,boolean tvupdt)
 	{	this.tvid=tvid;
 		this.tvtaid=tvtaid;
 		this.tvsi=tvsi;
 		this.tvusid=tvusid;
 		this.tvpo=tvpo;
-		this.taupdd=taupdd;
-		this.taupdt=taupdt;
+		this.tvupdd=tvupdd;
+		this.tvupdt=tvupdt;
 	}
 	public SegmentvoteMask()
 	{	
+	}
+	@Override
+	public SegmentvoteMask all(boolean b)
+	{	this.tvid=b;
+		this.tvtaid=b;
+		this.tvsi=b;
+		this.tvusid=b;
+		this.tvpo=b;
+		this.tvupdd=b;
+		this.tvupdt=b;
+	return this;
 	}
 	public boolean getTvid()
 	{	return tvid;
@@ -58,18 +69,18 @@ public class SegmentvoteMask implements Mask
 	{	this.tvpo=tvpo;
 		return this;
 	}
-	public boolean getTaupdd()
-	{	return taupdd;
+	public boolean getTvupdd()
+	{	return tvupdd;
 	}
-	public SegmentvoteMask setTaupdd(boolean taupdd)
-	{	this.taupdd=taupdd;
+	public SegmentvoteMask setTvupdd(boolean tvupdd)
+	{	this.tvupdd=tvupdd;
 		return this;
 	}
-	public boolean getTaupdt()
-	{	return taupdt;
+	public boolean getTvupdt()
+	{	return tvupdt;
 	}
-	public SegmentvoteMask setTaupdt(boolean taupdt)
-	{	this.taupdt=taupdt;
+	public SegmentvoteMask setTvupdt(boolean tvupdt)
+	{	this.tvupdt=tvupdt;
 		return this;
 	}
 }

@@ -23,6 +23,17 @@ public class WordvoteMask implements Mask
 	public WordvoteMask()
 	{	
 	}
+	@Override
+	public WordvoteMask all(boolean b)
+	{	this.wvid=b;
+		this.wvwaid=b;
+		this.wvsi=b;
+		this.wvusid=b;
+		this.wvpo=b;
+		this.wvupdd=b;
+		this.wvupdt=b;
+	return this;
+	}
 	public boolean getWvid()
 	{	return wvid;
 	}

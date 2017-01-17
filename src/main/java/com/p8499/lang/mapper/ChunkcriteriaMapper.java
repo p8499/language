@@ -19,11 +19,9 @@ public interface ChunkcriteriaMapper extends BeanMapper<Chunkcriteria,Integer>
 	public boolean exists(@Param("ccid")Integer ccid);
 	
 	@Override
-	@Select("SELECT CCID,CCCPID,CCSI,CCTK,CCTG FROM public.F1021 WHERE CCID=#{ccid}")
-	public Chunkcriteria get(@Param("ccid")Integer ccid);
-	
-	@Override
 	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<if test='mask.ccid or mask.cccpid or mask.ccsi or mask.cctk or mask.cctg'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.ccid'>CCID, </if>"
@@ -34,8 +32,13 @@ public interface ChunkcriteriaMapper extends BeanMapper<Chunkcriteria,Integer>
 		+ "</trim>"
 		+ "FROM public.F1021 WHERE CCID=#{ccid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT CCID,CCCPID,CCSI,CCTK,CCTG FROM public.F1021 WHERE CCID=#{ccid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Chunkcriteria getWithMask(@Param("ccid")Integer ccid,@Param("mask")Mask mask);
+	public Chunkcriteria get(@Param("ccid")Integer ccid,@Param("mask")Mask mask);
 	
 	@Override
 	@Insert("INSERT INTO public.F1021 (CCCPID,CCSI,CCTK,CCTG) VALUES (#{bean.cccpid},#{bean.ccsi},#{bean.cctk},#{bean.cctg})")
@@ -43,11 +46,9 @@ public interface ChunkcriteriaMapper extends BeanMapper<Chunkcriteria,Integer>
 	public void add(@Param("bean")Chunkcriteria bean);
 	
 	@Override
-	@Update("UPDATE public.F1021 SET CCCPID=#{bean.cccpid},CCSI=#{bean.ccsi},CCTK=#{bean.cctk},CCTG=#{bean.cctg} WHERE CCID=#{bean.ccid}")
-	public void update(@Param("bean")Chunkcriteria bean);
-	
-	@Override
 	@Update("<script>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
 		+ "<if test='mask.cccpid or mask.ccsi or mask.cctk or mask.cctg'>"
 		+ "UPDATE public.F1021 "
 		+ "<set>"
@@ -58,8 +59,13 @@ public interface ChunkcriteriaMapper extends BeanMapper<Chunkcriteria,Integer>
 		+ "</set>"
 		+ "WHERE CCID=#{bean.ccid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F1021 SET CCCPID=#{bean.cccpid},CCSI=#{bean.ccsi},CCTK=#{bean.cctk},CCTG=#{bean.cctg} WHERE CCID=#{bean.ccid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Chunkcriteria bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Chunkcriteria bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F1021 WHERE CCID=#{ccid}")
@@ -67,15 +73,8 @@ public interface ChunkcriteriaMapper extends BeanMapper<Chunkcriteria,Integer>
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT CCID,CCCPID,CCSI,CCTK,CCTG FROM public.F1021 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Chunkcriteria> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.ccid'>CCID, </if>"
 		+ "<if test='mask.cccpid'>CCCPID, </if>"
@@ -83,12 +82,17 @@ public interface ChunkcriteriaMapper extends BeanMapper<Chunkcriteria,Integer>
 		+ "<if test='mask.cctk'>CCTK, </if>"
 		+ "<if test='mask.cctg'>CCTG, </if>"
 		+ "</trim>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT CCID,CCCPID,CCSI,CCTK,CCTG "
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "FROM public.F1021 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Chunkcriteria> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Chunkcriteria> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"
@@ -97,7 +101,7 @@ public interface ChunkcriteriaMapper extends BeanMapper<Chunkcriteria,Integer>
 		+ "</script>")
 	public long count(@Param("filter")String filter);
 	
-	@Select("SELECT if(MAX(ccsi),null,0)+1 FROM public.F1021 WHERE cccpid=#{cccpid}")
+	@Select("SELECT COALESCE(MAX(ccsi),0)+1 FROM public.F1021 WHERE cccpid=#{cccpid}")
 	public Integer nextCcsi(@Param("cccpid")Integer cccpid);
 	
 	@Override

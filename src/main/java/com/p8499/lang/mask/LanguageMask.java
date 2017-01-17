@@ -17,6 +17,14 @@ public class LanguageMask implements Mask
 	public LanguageMask()
 	{	
 	}
+	@Override
+	public LanguageMask all(boolean b)
+	{	this.lsid=b;
+		this.lsname=b;
+		this.lsloc=b;
+		this.lssort=b;
+	return this;
+	}
 	public boolean getLsid()
 	{	return lsid;
 	}

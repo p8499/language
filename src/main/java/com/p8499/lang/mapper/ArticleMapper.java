@@ -15,16 +15,14 @@ import com.p8499.lang.bean.Article;
 @Component("articleMapper")
 public interface ArticleMapper extends BeanMapper<Article,Integer>
 {	@Override
-	@Select("SELECT COUNT(*)>0 FROM public.F1110 WHERE ATID=#{atid}")
+	@Select("SELECT COUNT(*)>0 FROM public.V1110 WHERE ATID=#{atid}")
 	public boolean exists(@Param("atid")Integer atid);
 	
 	@Override
-	@Select("SELECT ATID,ATCGID,ATSI,ATNAME,ATUSID,ATUPDD,ATUPDT,ATCGNAME,ATCSA,ATCSB,ATCSC,ATCSD,ATCSE,ATCSF FROM public.F1110 WHERE ATID=#{atid}")
-	public Article get(@Param("atid")Integer atid);
-	
-	@Override
 	@Select("<script>"
-		+ "<if test='mask.atid or mask.atcgid or mask.atsi or mask.atname or mask.atusid or mask.atupdd or mask.atupdt or mask.atcgname or mask.atcsa or mask.atcsb or mask.atcsc or mask.atcsd or mask.atcse or mask.atcsf'>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
+		+ "<if test='mask.atid or mask.atcgid or mask.atsi or mask.atname or mask.atusid or mask.atupdd or mask.atupdt or mask.atbrf or mask.atcgname or mask.atusname or mask.atcsa or mask.atcsb or mask.atcsc or mask.atcsd or mask.atcse or mask.atcsf'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.atid'>ATID, </if>"
 		+ "<if test='mask.atcgid'>ATCGID, </if>"
@@ -33,7 +31,9 @@ public interface ArticleMapper extends BeanMapper<Article,Integer>
 		+ "<if test='mask.atusid'>ATUSID, </if>"
 		+ "<if test='mask.atupdd'>ATUPDD, </if>"
 		+ "<if test='mask.atupdt'>ATUPDT, </if>"
+		+ "<if test='mask.atbrf'>ATBRF, </if>"
 		+ "<if test='mask.atcgname'>ATCGNAME, </if>"
+		+ "<if test='mask.atusname'>ATUSNAME, </if>"
 		+ "<if test='mask.atcsa'>ATCSA, </if>"
 		+ "<if test='mask.atcsb'>ATCSB, </if>"
 		+ "<if test='mask.atcsc'>ATCSC, </if>"
@@ -41,23 +41,26 @@ public interface ArticleMapper extends BeanMapper<Article,Integer>
 		+ "<if test='mask.atcse'>ATCSE, </if>"
 		+ "<if test='mask.atcsf'>ATCSF, </if>"
 		+ "</trim>"
-		+ "FROM public.F1110 WHERE ATID=#{atid}"
+		+ "FROM public.V1110 WHERE ATID=#{atid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT ATID,ATCGID,ATSI,ATNAME,ATUSID,ATUPDD,ATUPDT,ATBRF,ATCGNAME,ATUSNAME,ATCSA,ATCSB,ATCSC,ATCSD,ATCSE,ATCSF FROM public.V1110 WHERE ATID=#{atid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Article getWithMask(@Param("atid")Integer atid,@Param("mask")Mask mask);
+	public Article get(@Param("atid")Integer atid,@Param("mask")Mask mask);
 	
 	@Override
-	@Insert("INSERT INTO public.F1110 (ATCGID,ATSI,ATNAME,ATUSID,ATUPDD,ATUPDT,ATCGNAME,ATCSA,ATCSB,ATCSC,ATCSD,ATCSE,ATCSF) VALUES (#{bean.atcgid},#{bean.atsi},#{bean.atname},#{bean.atusid},#{bean.atupdd},#{bean.atupdt},#{bean.atcgname},#{bean.atcsa},#{bean.atcsb},#{bean.atcsc},#{bean.atcsd},#{bean.atcse},#{bean.atcsf})")
+	@Insert("INSERT INTO public.F1110 (ATCGID,ATSI,ATNAME,ATUSID,ATUPDD,ATUPDT) VALUES (#{bean.atcgid},#{bean.atsi},#{bean.atname},#{bean.atusid},#{bean.atupdd},#{bean.atupdt})")
 	@Options(useGeneratedKeys=true,keyProperty="bean.atid")
 	public void add(@Param("bean")Article bean);
 	
 	@Override
-	@Update("UPDATE public.F1110 SET ATCGID=#{bean.atcgid},ATSI=#{bean.atsi},ATNAME=#{bean.atname},ATUSID=#{bean.atusid},ATUPDD=#{bean.atupdd},ATUPDT=#{bean.atupdt},ATCGNAME=#{bean.atcgname},ATCSA=#{bean.atcsa},ATCSB=#{bean.atcsb},ATCSC=#{bean.atcsc},ATCSD=#{bean.atcsd},ATCSE=#{bean.atcse},ATCSF=#{bean.atcsf} WHERE ATID=#{bean.atid}")
-	public void update(@Param("bean")Article bean);
-	
-	@Override
 	@Update("<script>"
-		+ "<if test='mask.atcgid or mask.atsi or mask.atname or mask.atusid or mask.atupdd or mask.atupdt or mask.atcgname or mask.atcsa or mask.atcsb or mask.atcsc or mask.atcsd or mask.atcse or mask.atcsf'>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
+		+ "<if test='mask.atcgid or mask.atsi or mask.atname or mask.atusid or mask.atupdd or mask.atupdt'>"
 		+ "UPDATE public.F1110 "
 		+ "<set>"
 		+ "<if test='mask.atcgid'>ATCGID=#{bean.atcgid}, </if>"
@@ -66,18 +69,16 @@ public interface ArticleMapper extends BeanMapper<Article,Integer>
 		+ "<if test='mask.atusid'>ATUSID=#{bean.atusid}, </if>"
 		+ "<if test='mask.atupdd'>ATUPDD=#{bean.atupdd}, </if>"
 		+ "<if test='mask.atupdt'>ATUPDT=#{bean.atupdt}, </if>"
-		+ "<if test='mask.atcgname'>ATCGNAME=#{bean.atcgname}, </if>"
-		+ "<if test='mask.atcsa'>ATCSA=#{bean.atcsa}, </if>"
-		+ "<if test='mask.atcsb'>ATCSB=#{bean.atcsb}, </if>"
-		+ "<if test='mask.atcsc'>ATCSC=#{bean.atcsc}, </if>"
-		+ "<if test='mask.atcsd'>ATCSD=#{bean.atcsd}, </if>"
-		+ "<if test='mask.atcse'>ATCSE=#{bean.atcse}, </if>"
-		+ "<if test='mask.atcsf'>ATCSF=#{bean.atcsf}, </if>"
 		+ "</set>"
 		+ "WHERE ATID=#{bean.atid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F1110 SET ATCGID=#{bean.atcgid},ATSI=#{bean.atsi},ATNAME=#{bean.atname},ATUSID=#{bean.atusid},ATUPDD=#{bean.atupdd},ATUPDT=#{bean.atupdt} WHERE ATID=#{bean.atid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Article bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Article bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F1110 WHERE ATID=#{atid}")
@@ -85,15 +86,8 @@ public interface ArticleMapper extends BeanMapper<Article,Integer>
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT ATID,ATCGID,ATSI,ATNAME,ATUSID,ATUPDD,ATUPDT,ATCGNAME,ATCSA,ATCSB,ATCSC,ATCSD,ATCSE,ATCSF FROM public.F1110 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Article> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.atid'>ATID, </if>"
 		+ "<if test='mask.atcgid'>ATCGID, </if>"
@@ -102,7 +96,9 @@ public interface ArticleMapper extends BeanMapper<Article,Integer>
 		+ "<if test='mask.atusid'>ATUSID, </if>"
 		+ "<if test='mask.atupdd'>ATUPDD, </if>"
 		+ "<if test='mask.atupdt'>ATUPDT, </if>"
+		+ "<if test='mask.atbrf'>ATBRF, </if>"
 		+ "<if test='mask.atcgname'>ATCGNAME, </if>"
+		+ "<if test='mask.atusname'>ATUSNAME, </if>"
 		+ "<if test='mask.atcsa'>ATCSA, </if>"
 		+ "<if test='mask.atcsb'>ATCSB, </if>"
 		+ "<if test='mask.atcsc'>ATCSC, </if>"
@@ -110,27 +106,32 @@ public interface ArticleMapper extends BeanMapper<Article,Integer>
 		+ "<if test='mask.atcse'>ATCSE, </if>"
 		+ "<if test='mask.atcsf'>ATCSF, </if>"
 		+ "</trim>"
-		+ "FROM public.F1110 "
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT ATID,ATCGID,ATSI,ATNAME,ATUSID,ATUPDD,ATUPDT,ATBRF,ATCGNAME,ATUSNAME,ATCSA,ATCSB,ATCSC,ATCSD,ATCSE,ATCSF "
+		+ "</otherwise>"
+		+ "</choose>"
+		+ "FROM public.V1110 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Article> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Article> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT COUNT(*) FROM public.F1110 "
+		+ "SELECT COUNT(*) FROM public.V1110 "
 		+ "<if test='filter!=null'>WHERE ${filter}</if> "
 		+ "</script>")
 	public long count(@Param("filter")String filter);
 	
-	@Select("SELECT if(MAX(atsi),null,0)+1 FROM public.F1110 WHERE atcgid=#{atcgid}")
+	@Select("SELECT COALESCE(MAX(atsi),0)+1 FROM public.V1110 WHERE atcgid=#{atcgid}")
 	public Integer nextAtsi(@Param("atcgid")Integer atcgid);
 	
 	@Override
 	@Select("<script>"
 		+ "SELECT SUM(C)=0 FROM( "
-		+ "SELECT COUNT(*) C FROM public.F1110 WHERE ATCGID=#{bean.atcgid} AND ATSI=#{bean.atsi}<if test='bean.atid!=null'> AND ATID!=#{bean.atid}</if> "
+		+ "SELECT COUNT(*) C FROM public.V1110 WHERE ATCGID=#{bean.atcgid} AND ATSI=#{bean.atsi}<if test='bean.atid!=null'> AND ATID!=#{bean.atid}</if> "
 		+ ") T"
 		+ "</script>")
 	public boolean unique(@Param("bean")Article bean);
@@ -150,12 +151,12 @@ public interface ArticleMapper extends BeanMapper<Article,Integer>
 	
 	@Override
 	@Select("SELECT SUM(C)>0 FROM( "
-		+ "SELECT COUNT(*) C FROM public.F1120 WHERE ASATID=#{bean.atid} "
+		+ "SELECT COUNT(*) C FROM public.V1120 WHERE ASATID=#{bean.atid} "
 		+ ") T")
 	public boolean referenced(@Param("bean")Article bean);
 	
 	@Select("SELECT SUM(C)>0 FROM( "
-		+ "SELECT COUNT(*) C FROM public.F1120 WHERE ASATID=#{atid} "
+		+ "SELECT COUNT(*) C FROM public.V1120 WHERE ASATID=#{atid} "
 		+ ") T")
 	public boolean referencedAtid(@Param("atid")Integer atid);
 }

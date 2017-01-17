@@ -29,6 +29,20 @@ public class WordflowMask implements Mask
 	public WordflowMask()
 	{	
 	}
+	@Override
+	public WordflowMask all(boolean b)
+	{	this.waid=b;
+		this.wawoid=b;
+		this.wasi=b;
+		this.wapt=b;
+		this.wast=b;
+		this.wausid=b;
+		this.wacrdd=b;
+		this.wacrdt=b;
+		this.waupdd=b;
+		this.waupdt=b;
+	return this;
+	}
 	public boolean getWaid()
 	{	return waid;
 	}

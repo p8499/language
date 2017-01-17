@@ -19,11 +19,9 @@ public interface CategoryMapper extends BeanMapper<Category,Integer>
 	public boolean exists(@Param("cgid")Integer cgid);
 	
 	@Override
-	@Select("SELECT CGID,CGLSID,CGSI,CGPSI,CGNAME FROM public.F1030 WHERE CGID=#{cgid}")
-	public Category get(@Param("cgid")Integer cgid);
-	
-	@Override
 	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<if test='mask.cgid or mask.cglsid or mask.cgsi or mask.cgpsi or mask.cgname'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.cgid'>CGID, </if>"
@@ -34,8 +32,13 @@ public interface CategoryMapper extends BeanMapper<Category,Integer>
 		+ "</trim>"
 		+ "FROM public.F1030 WHERE CGID=#{cgid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT CGID,CGLSID,CGSI,CGPSI,CGNAME FROM public.F1030 WHERE CGID=#{cgid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Category getWithMask(@Param("cgid")Integer cgid,@Param("mask")Mask mask);
+	public Category get(@Param("cgid")Integer cgid,@Param("mask")Mask mask);
 	
 	@Override
 	@Insert("INSERT INTO public.F1030 (CGLSID,CGSI,CGPSI,CGNAME) VALUES (#{bean.cglsid},#{bean.cgsi},#{bean.cgpsi},#{bean.cgname})")
@@ -43,11 +46,9 @@ public interface CategoryMapper extends BeanMapper<Category,Integer>
 	public void add(@Param("bean")Category bean);
 	
 	@Override
-	@Update("UPDATE public.F1030 SET CGLSID=#{bean.cglsid},CGSI=#{bean.cgsi},CGPSI=#{bean.cgpsi},CGNAME=#{bean.cgname} WHERE CGID=#{bean.cgid}")
-	public void update(@Param("bean")Category bean);
-	
-	@Override
 	@Update("<script>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
 		+ "<if test='mask.cglsid or mask.cgsi or mask.cgpsi or mask.cgname'>"
 		+ "UPDATE public.F1030 "
 		+ "<set>"
@@ -58,8 +59,13 @@ public interface CategoryMapper extends BeanMapper<Category,Integer>
 		+ "</set>"
 		+ "WHERE CGID=#{bean.cgid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F1030 SET CGLSID=#{bean.cglsid},CGSI=#{bean.cgsi},CGPSI=#{bean.cgpsi},CGNAME=#{bean.cgname} WHERE CGID=#{bean.cgid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Category bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Category bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F1030 WHERE CGID=#{cgid}")
@@ -67,15 +73,8 @@ public interface CategoryMapper extends BeanMapper<Category,Integer>
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT CGID,CGLSID,CGSI,CGPSI,CGNAME FROM public.F1030 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Category> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.cgid'>CGID, </if>"
 		+ "<if test='mask.cglsid'>CGLSID, </if>"
@@ -83,12 +82,17 @@ public interface CategoryMapper extends BeanMapper<Category,Integer>
 		+ "<if test='mask.cgpsi'>CGPSI, </if>"
 		+ "<if test='mask.cgname'>CGNAME, </if>"
 		+ "</trim>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT CGID,CGLSID,CGSI,CGPSI,CGNAME "
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "FROM public.F1030 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Category> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Category> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"
@@ -116,12 +120,12 @@ public interface CategoryMapper extends BeanMapper<Category,Integer>
 	
 	@Override
 	@Select("SELECT SUM(C)>0 FROM( "
-		+ "SELECT COUNT(*) C FROM public.F1110 WHERE ATCGID=#{bean.cgid} "
+		+ "SELECT COUNT(*) C FROM public.V1110 WHERE ATCGID=#{bean.cgid} "
 		+ ") T")
 	public boolean referenced(@Param("bean")Category bean);
 	
 	@Select("SELECT SUM(C)>0 FROM( "
-		+ "SELECT COUNT(*) C FROM public.F1110 WHERE ATCGID=#{cgid} "
+		+ "SELECT COUNT(*) C FROM public.V1110 WHERE ATCGID=#{cgid} "
 		+ ") T")
 	public boolean referencedCgid(@Param("cgid")Integer cgid);
 }

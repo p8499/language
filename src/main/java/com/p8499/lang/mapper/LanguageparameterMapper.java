@@ -18,11 +18,9 @@ public interface LanguageparameterMapper extends BeanMapper<Languageparameter,St
 	public boolean exists(@Param("lplsid")String lplsid);
 	
 	@Override
-	@Select("SELECT LPLSID,LPSGNG,LPSGCH,LPSGLF,LPSGCW,LPSGBW,LPSGNB,LPSGFT,LPSGFC,LPPONG,LPPOCH,LPPOLF,LPPOFT,LPPOFC FROM public.F9410 WHERE LPLSID=#{lplsid}")
-	public Languageparameter get(@Param("lplsid")String lplsid);
-	
-	@Override
 	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<if test='mask.lplsid or mask.lpsgng or mask.lpsgch or mask.lpsglf or mask.lpsgcw or mask.lpsgbw or mask.lpsgnb or mask.lpsgft or mask.lpsgfc or mask.lppong or mask.lppoch or mask.lppolf or mask.lppoft or mask.lppofc'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.lplsid'>LPLSID, </if>"
@@ -42,19 +40,22 @@ public interface LanguageparameterMapper extends BeanMapper<Languageparameter,St
 		+ "</trim>"
 		+ "FROM public.F9410 WHERE LPLSID=#{lplsid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT LPLSID,LPSGNG,LPSGCH,LPSGLF,LPSGCW,LPSGBW,LPSGNB,LPSGFT,LPSGFC,LPPONG,LPPOCH,LPPOLF,LPPOFT,LPPOFC FROM public.F9410 WHERE LPLSID=#{lplsid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Languageparameter getWithMask(@Param("lplsid")String lplsid,@Param("mask")Mask mask);
+	public Languageparameter get(@Param("lplsid")String lplsid,@Param("mask")Mask mask);
 	
 	@Override
 	@Insert("INSERT INTO public.F9410 (LPLSID,LPSGNG,LPSGCH,LPSGLF,LPSGCW,LPSGBW,LPSGNB,LPSGFT,LPSGFC,LPPONG,LPPOCH,LPPOLF,LPPOFT,LPPOFC) VALUES (#{bean.lplsid},#{bean.lpsgng},#{bean.lpsgch},#{bean.lpsglf},#{bean.lpsgcw},#{bean.lpsgbw},#{bean.lpsgnb},#{bean.lpsgft},#{bean.lpsgfc},#{bean.lppong},#{bean.lppoch},#{bean.lppolf},#{bean.lppoft},#{bean.lppofc})")
 	public void add(@Param("bean")Languageparameter bean);
 	
 	@Override
-	@Update("UPDATE public.F9410 SET LPSGNG=#{bean.lpsgng},LPSGCH=#{bean.lpsgch},LPSGLF=#{bean.lpsglf},LPSGCW=#{bean.lpsgcw},LPSGBW=#{bean.lpsgbw},LPSGNB=#{bean.lpsgnb},LPSGFT=#{bean.lpsgft},LPSGFC=#{bean.lpsgfc},LPPONG=#{bean.lppong},LPPOCH=#{bean.lppoch},LPPOLF=#{bean.lppolf},LPPOFT=#{bean.lppoft},LPPOFC=#{bean.lppofc} WHERE LPLSID=#{bean.lplsid}")
-	public void update(@Param("bean")Languageparameter bean);
-	
-	@Override
 	@Update("<script>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
 		+ "<if test='mask.lpsgng or mask.lpsgch or mask.lpsglf or mask.lpsgcw or mask.lpsgbw or mask.lpsgnb or mask.lpsgft or mask.lpsgfc or mask.lppong or mask.lppoch or mask.lppolf or mask.lppoft or mask.lppofc'>"
 		+ "UPDATE public.F9410 "
 		+ "<set>"
@@ -74,8 +75,13 @@ public interface LanguageparameterMapper extends BeanMapper<Languageparameter,St
 		+ "</set>"
 		+ "WHERE LPLSID=#{bean.lplsid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F9410 SET LPSGNG=#{bean.lpsgng},LPSGCH=#{bean.lpsgch},LPSGLF=#{bean.lpsglf},LPSGCW=#{bean.lpsgcw},LPSGBW=#{bean.lpsgbw},LPSGNB=#{bean.lpsgnb},LPSGFT=#{bean.lpsgft},LPSGFC=#{bean.lpsgfc},LPPONG=#{bean.lppong},LPPOCH=#{bean.lppoch},LPPOLF=#{bean.lppolf},LPPOFT=#{bean.lppoft},LPPOFC=#{bean.lppofc} WHERE LPLSID=#{bean.lplsid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Languageparameter bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Languageparameter bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F9410 WHERE LPLSID=#{lplsid}")
@@ -83,15 +89,8 @@ public interface LanguageparameterMapper extends BeanMapper<Languageparameter,St
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT LPLSID,LPSGNG,LPSGCH,LPSGLF,LPSGCW,LPSGBW,LPSGNB,LPSGFT,LPSGFC,LPPONG,LPPOCH,LPPOLF,LPPOFT,LPPOFC FROM public.F9410 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Languageparameter> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.lplsid'>LPLSID, </if>"
 		+ "<if test='mask.lpsgng'>LPSGNG, </if>"
@@ -108,12 +107,17 @@ public interface LanguageparameterMapper extends BeanMapper<Languageparameter,St
 		+ "<if test='mask.lppoft'>LPPOFT, </if>"
 		+ "<if test='mask.lppofc'>LPPOFC, </if>"
 		+ "</trim>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT LPLSID,LPSGNG,LPSGCH,LPSGLF,LPSGCW,LPSGBW,LPSGNB,LPSGFT,LPSGFC,LPPONG,LPPOCH,LPPOLF,LPPOFT,LPPOFC "
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "FROM public.F9410 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Languageparameter> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Languageparameter> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"

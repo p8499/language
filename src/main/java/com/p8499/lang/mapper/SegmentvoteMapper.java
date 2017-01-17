@@ -12,58 +12,64 @@ import com.p8499.mvc.database.BeanMapper;
 import com.p8499.mvc.database.Mask;
 import com.p8499.lang.bean.Segmentvote;
 
-@Component("SegmentvoteMapper")
+@Component("segmentvoteMapper")
 public interface SegmentvoteMapper extends BeanMapper<Segmentvote,Integer>
 {	@Override
 	@Select("SELECT COUNT(*)>0 FROM public.F1132 WHERE TVID=#{tvid}")
 	public boolean exists(@Param("tvid")Integer tvid);
 	
 	@Override
-	@Select("SELECT TVID,TVTAID,TVSI,TVUSID,TVPO,TAUPDD,TAUPDT FROM public.F1132 WHERE TVID=#{tvid}")
-	public Segmentvote get(@Param("tvid")Integer tvid);
-	
-	@Override
 	@Select("<script>"
-		+ "<if test='mask.tvid or mask.tvtaid or mask.tvsi or mask.tvusid or mask.tvpo or mask.taupdd or mask.taupdt'>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
+		+ "<if test='mask.tvid or mask.tvtaid or mask.tvsi or mask.tvusid or mask.tvpo or mask.tvupdd or mask.tvupdt'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.tvid'>TVID, </if>"
 		+ "<if test='mask.tvtaid'>TVTAID, </if>"
 		+ "<if test='mask.tvsi'>TVSI, </if>"
 		+ "<if test='mask.tvusid'>TVUSID, </if>"
 		+ "<if test='mask.tvpo'>TVPO, </if>"
-		+ "<if test='mask.taupdd'>TAUPDD, </if>"
-		+ "<if test='mask.taupdt'>TAUPDT, </if>"
+		+ "<if test='mask.tvupdd'>TVUPDD, </if>"
+		+ "<if test='mask.tvupdt'>TVUPDT, </if>"
 		+ "</trim>"
 		+ "FROM public.F1132 WHERE TVID=#{tvid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT TVID,TVTAID,TVSI,TVUSID,TVPO,TVUPDD,TVUPDT FROM public.F1132 WHERE TVID=#{tvid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Segmentvote getWithMask(@Param("tvid")Integer tvid,@Param("mask")Mask mask);
+	public Segmentvote get(@Param("tvid")Integer tvid,@Param("mask")Mask mask);
 	
 	@Override
-	@Insert("INSERT INTO public.F1132 (TVTAID,TVSI,TVUSID,TVPO,TAUPDD,TAUPDT) VALUES (#{bean.tvtaid},#{bean.tvsi},#{bean.tvusid},#{bean.tvpo},#{bean.taupdd},#{bean.taupdt})")
+	@Insert("INSERT INTO public.F1132 (TVTAID,TVSI,TVUSID,TVPO,TVUPDD,TVUPDT) VALUES (#{bean.tvtaid},#{bean.tvsi},#{bean.tvusid},#{bean.tvpo},#{bean.tvupdd},#{bean.tvupdt})")
 	@Options(useGeneratedKeys=true,keyProperty="bean.tvid")
 	public void add(@Param("bean")Segmentvote bean);
 	
 	@Override
-	@Update("UPDATE public.F1132 SET TVTAID=#{bean.tvtaid},TVSI=#{bean.tvsi},TVUSID=#{bean.tvusid},TVPO=#{bean.tvpo},TAUPDD=#{bean.taupdd},TAUPDT=#{bean.taupdt} WHERE TVID=#{bean.tvid}")
-	public void update(@Param("bean")Segmentvote bean);
-	
-	@Override
 	@Update("<script>"
-		+ "<if test='mask.tvtaid or mask.tvsi or mask.tvusid or mask.tvpo or mask.taupdd or mask.taupdt'>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
+		+ "<if test='mask.tvtaid or mask.tvsi or mask.tvusid or mask.tvpo or mask.tvupdd or mask.tvupdt'>"
 		+ "UPDATE public.F1132 "
 		+ "<set>"
 		+ "<if test='mask.tvtaid'>TVTAID=#{bean.tvtaid}, </if>"
 		+ "<if test='mask.tvsi'>TVSI=#{bean.tvsi}, </if>"
 		+ "<if test='mask.tvusid'>TVUSID=#{bean.tvusid}, </if>"
 		+ "<if test='mask.tvpo'>TVPO=#{bean.tvpo}, </if>"
-		+ "<if test='mask.taupdd'>TAUPDD=#{bean.taupdd}, </if>"
-		+ "<if test='mask.taupdt'>TAUPDT=#{bean.taupdt}, </if>"
+		+ "<if test='mask.tvupdd'>TVUPDD=#{bean.tvupdd}, </if>"
+		+ "<if test='mask.tvupdt'>TVUPDT=#{bean.tvupdt}, </if>"
 		+ "</set>"
 		+ "WHERE TVID=#{bean.tvid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F1132 SET TVTAID=#{bean.tvtaid},TVSI=#{bean.tvsi},TVUSID=#{bean.tvusid},TVPO=#{bean.tvpo},TVUPDD=#{bean.tvupdd},TVUPDT=#{bean.tvupdt} WHERE TVID=#{bean.tvid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Segmentvote bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Segmentvote bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F1132 WHERE TVID=#{tvid}")
@@ -71,30 +77,28 @@ public interface SegmentvoteMapper extends BeanMapper<Segmentvote,Integer>
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT TVID,TVTAID,TVSI,TVUSID,TVPO,TAUPDD,TAUPDT FROM public.F1132 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Segmentvote> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.tvid'>TVID, </if>"
 		+ "<if test='mask.tvtaid'>TVTAID, </if>"
 		+ "<if test='mask.tvsi'>TVSI, </if>"
 		+ "<if test='mask.tvusid'>TVUSID, </if>"
 		+ "<if test='mask.tvpo'>TVPO, </if>"
-		+ "<if test='mask.taupdd'>TAUPDD, </if>"
-		+ "<if test='mask.taupdt'>TAUPDT, </if>"
+		+ "<if test='mask.tvupdd'>TVUPDD, </if>"
+		+ "<if test='mask.tvupdt'>TVUPDT, </if>"
 		+ "</trim>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT TVID,TVTAID,TVSI,TVUSID,TVPO,TVUPDD,TVUPDT "
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "FROM public.F1132 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Segmentvote> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Segmentvote> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"
@@ -103,7 +107,7 @@ public interface SegmentvoteMapper extends BeanMapper<Segmentvote,Integer>
 		+ "</script>")
 	public long count(@Param("filter")String filter);
 	
-	@Select("SELECT if(MAX(tvsi),null,0)+1 FROM public.F1132 WHERE tvtaid=#{tvtaid}")
+	@Select("SELECT COALESCE(MAX(tvsi),0)+1 FROM public.F1132 WHERE tvtaid=#{tvtaid}")
 	public Integer nextTvsi(@Param("tvtaid")Integer tvtaid);
 	
 	@Override

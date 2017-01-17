@@ -19,6 +19,15 @@ public class ChunkcriteriaMask implements Mask
 	public ChunkcriteriaMask()
 	{	
 	}
+	@Override
+	public ChunkcriteriaMask all(boolean b)
+	{	this.ccid=b;
+		this.cccpid=b;
+		this.ccsi=b;
+		this.cctk=b;
+		this.cctg=b;
+	return this;
+	}
 	public boolean getCcid()
 	{	return ccid;
 	}

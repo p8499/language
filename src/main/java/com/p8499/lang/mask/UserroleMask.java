@@ -15,6 +15,13 @@ public class UserroleMask implements Mask
 	public UserroleMask()
 	{	
 	}
+	@Override
+	public UserroleMask all(boolean b)
+	{	this.urid=b;
+		this.urusid=b;
+		this.urrlid=b;
+	return this;
+	}
 	public boolean getUrid()
 	{	return urid;
 	}

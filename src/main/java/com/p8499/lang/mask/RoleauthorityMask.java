@@ -15,6 +15,13 @@ public class RoleauthorityMask implements Mask
 	public RoleauthorityMask()
 	{	
 	}
+	@Override
+	public RoleauthorityMask all(boolean b)
+	{	this.raid=b;
+		this.rarlid=b;
+		this.raauid=b;
+	return this;
+	}
 	public boolean getRaid()
 	{	return raid;
 	}

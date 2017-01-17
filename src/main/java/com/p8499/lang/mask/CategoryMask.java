@@ -19,6 +19,15 @@ public class CategoryMask implements Mask
 	public CategoryMask()
 	{	
 	}
+	@Override
+	public CategoryMask all(boolean b)
+	{	this.cgid=b;
+		this.cglsid=b;
+		this.cgsi=b;
+		this.cgpsi=b;
+		this.cgname=b;
+	return this;
+	}
 	public boolean getCgid()
 	{	return cgid;
 	}

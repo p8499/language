@@ -21,6 +21,16 @@ public class TaggingMask implements Mask
 	public TaggingMask()
 	{	
 	}
+	@Override
+	public TaggingMask all(boolean b)
+	{	this.tgasid=b;
+		this.tgcont=b;
+		this.tgst=b;
+		this.tgusid=b;
+		this.tgupdd=b;
+		this.tgupdt=b;
+	return this;
+	}
 	public boolean getTgasid()
 	{	return tgasid;
 	}

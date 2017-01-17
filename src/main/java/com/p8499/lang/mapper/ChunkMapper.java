@@ -19,11 +19,9 @@ public interface ChunkMapper extends BeanMapper<Chunk,Integer>
 	public boolean exists(@Param("cpid")Integer cpid);
 	
 	@Override
-	@Select("SELECT CPID,CPLSID,CPSI,CPTG,CPFT,CPSORT FROM public.F1020 WHERE CPID=#{cpid}")
-	public Chunk get(@Param("cpid")Integer cpid);
-	
-	@Override
 	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<if test='mask.cpid or mask.cplsid or mask.cpsi or mask.cptg or mask.cpft or mask.cpsort'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.cpid'>CPID, </if>"
@@ -35,8 +33,13 @@ public interface ChunkMapper extends BeanMapper<Chunk,Integer>
 		+ "</trim>"
 		+ "FROM public.F1020 WHERE CPID=#{cpid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT CPID,CPLSID,CPSI,CPTG,CPFT,CPSORT FROM public.F1020 WHERE CPID=#{cpid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Chunk getWithMask(@Param("cpid")Integer cpid,@Param("mask")Mask mask);
+	public Chunk get(@Param("cpid")Integer cpid,@Param("mask")Mask mask);
 	
 	@Override
 	@Insert("INSERT INTO public.F1020 (CPLSID,CPSI,CPTG,CPFT,CPSORT) VALUES (#{bean.cplsid},#{bean.cpsi},#{bean.cptg},#{bean.cpft},#{bean.cpsort})")
@@ -44,11 +47,9 @@ public interface ChunkMapper extends BeanMapper<Chunk,Integer>
 	public void add(@Param("bean")Chunk bean);
 	
 	@Override
-	@Update("UPDATE public.F1020 SET CPLSID=#{bean.cplsid},CPSI=#{bean.cpsi},CPTG=#{bean.cptg},CPFT=#{bean.cpft},CPSORT=#{bean.cpsort} WHERE CPID=#{bean.cpid}")
-	public void update(@Param("bean")Chunk bean);
-	
-	@Override
 	@Update("<script>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
 		+ "<if test='mask.cplsid or mask.cpsi or mask.cptg or mask.cpft or mask.cpsort'>"
 		+ "UPDATE public.F1020 "
 		+ "<set>"
@@ -60,8 +61,13 @@ public interface ChunkMapper extends BeanMapper<Chunk,Integer>
 		+ "</set>"
 		+ "WHERE CPID=#{bean.cpid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F1020 SET CPLSID=#{bean.cplsid},CPSI=#{bean.cpsi},CPTG=#{bean.cptg},CPFT=#{bean.cpft},CPSORT=#{bean.cpsort} WHERE CPID=#{bean.cpid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Chunk bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Chunk bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F1020 WHERE CPID=#{cpid}")
@@ -69,15 +75,8 @@ public interface ChunkMapper extends BeanMapper<Chunk,Integer>
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT CPID,CPLSID,CPSI,CPTG,CPFT,CPSORT FROM public.F1020 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Chunk> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.cpid'>CPID, </if>"
 		+ "<if test='mask.cplsid'>CPLSID, </if>"
@@ -86,12 +85,17 @@ public interface ChunkMapper extends BeanMapper<Chunk,Integer>
 		+ "<if test='mask.cpft'>CPFT, </if>"
 		+ "<if test='mask.cpsort'>CPSORT, </if>"
 		+ "</trim>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT CPID,CPLSID,CPSI,CPTG,CPFT,CPSORT "
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "FROM public.F1020 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Chunk> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Chunk> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"

@@ -31,6 +31,21 @@ public class SegmentflowMask implements Mask
 	public SegmentflowMask()
 	{	
 	}
+	@Override
+	public SegmentflowMask all(boolean b)
+	{	this.taid=b;
+		this.taasid=b;
+		this.tasi=b;
+		this.tapi=b;
+		this.tahz=b;
+		this.tast=b;
+		this.tausid=b;
+		this.tacrdd=b;
+		this.tacrdt=b;
+		this.taupdd=b;
+		this.taupdt=b;
+	return this;
+	}
 	public boolean getTaid()
 	{	return taid;
 	}

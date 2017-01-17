@@ -37,6 +37,24 @@ public class LanguageparameterMask implements Mask
 	public LanguageparameterMask()
 	{	
 	}
+	@Override
+	public LanguageparameterMask all(boolean b)
+	{	this.lplsid=b;
+		this.lpsgng=b;
+		this.lpsgch=b;
+		this.lpsglf=b;
+		this.lpsgcw=b;
+		this.lpsgbw=b;
+		this.lpsgnb=b;
+		this.lpsgft=b;
+		this.lpsgfc=b;
+		this.lppong=b;
+		this.lppoch=b;
+		this.lppolf=b;
+		this.lppoft=b;
+		this.lppofc=b;
+	return this;
+	}
 	public boolean getLplsid()
 	{	return lplsid;
 	}

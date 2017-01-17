@@ -15,6 +15,13 @@ public class AuthorityMask implements Mask
 	public AuthorityMask()
 	{	
 	}
+	@Override
+	public AuthorityMask all(boolean b)
+	{	this.auid=b;
+		this.augrp=b;
+		this.auname=b;
+	return this;
+	}
 	public boolean getAuid()
 	{	return auid;
 	}

@@ -8,18 +8,31 @@ public class WordMask implements Mask
 	protected boolean woct=false;
 	protected boolean wopt=false;
 	protected boolean wocl=false;
+	protected boolean wosort=false;
 	protected boolean wost=false;
 
-	public WordMask(boolean woid,boolean wolsid,boolean woct,boolean wopt,boolean wocl,boolean wost)
+	public WordMask(boolean woid,boolean wolsid,boolean woct,boolean wopt,boolean wocl,boolean wosort,boolean wost)
 	{	this.woid=woid;
 		this.wolsid=wolsid;
 		this.woct=woct;
 		this.wopt=wopt;
 		this.wocl=wocl;
+		this.wosort=wosort;
 		this.wost=wost;
 	}
 	public WordMask()
 	{	
+	}
+	@Override
+	public WordMask all(boolean b)
+	{	this.woid=b;
+		this.wolsid=b;
+		this.woct=b;
+		this.wopt=b;
+		this.wocl=b;
+		this.wosort=b;
+		this.wost=b;
+	return this;
 	}
 	public boolean getWoid()
 	{	return woid;
@@ -54,6 +67,13 @@ public class WordMask implements Mask
 	}
 	public WordMask setWocl(boolean wocl)
 	{	this.wocl=wocl;
+		return this;
+	}
+	public boolean getWosort()
+	{	return wosort;
+	}
+	public WordMask setWosort(boolean wosort)
+	{	this.wosort=wosort;
 		return this;
 	}
 	public boolean getWost()

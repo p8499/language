@@ -19,49 +19,57 @@ public interface WordMapper extends BeanMapper<Word,Integer>
 	public boolean exists(@Param("woid")Integer woid);
 	
 	@Override
-	@Select("SELECT WOID,WOLSID,WOCT,WOPT,WOCL,WOST FROM public.F1040 WHERE WOID=#{woid}")
-	public Word get(@Param("woid")Integer woid);
-	
-	@Override
 	@Select("<script>"
-		+ "<if test='mask.woid or mask.wolsid or mask.woct or mask.wopt or mask.wocl or mask.wost'>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
+		+ "<if test='mask.woid or mask.wolsid or mask.woct or mask.wopt or mask.wocl or mask.wosort or mask.wost'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.woid'>WOID, </if>"
 		+ "<if test='mask.wolsid'>WOLSID, </if>"
 		+ "<if test='mask.woct'>WOCT, </if>"
 		+ "<if test='mask.wopt'>WOPT, </if>"
 		+ "<if test='mask.wocl'>WOCL, </if>"
+		+ "<if test='mask.wosort'>WOSORT, </if>"
 		+ "<if test='mask.wost'>WOST, </if>"
 		+ "</trim>"
 		+ "FROM public.F1040 WHERE WOID=#{woid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT WOID,WOLSID,WOCT,WOPT,WOCL,WOSORT,WOST FROM public.F1040 WHERE WOID=#{woid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Word getWithMask(@Param("woid")Integer woid,@Param("mask")Mask mask);
+	public Word get(@Param("woid")Integer woid,@Param("mask")Mask mask);
 	
 	@Override
-	@Insert("INSERT INTO public.F1040 (WOLSID,WOCT,WOPT,WOCL,WOST) VALUES (#{bean.wolsid},#{bean.woct},#{bean.wopt},#{bean.wocl},#{bean.wost})")
+	@Insert("INSERT INTO public.F1040 (WOLSID,WOCT,WOPT,WOCL,WOSORT,WOST) VALUES (#{bean.wolsid},#{bean.woct},#{bean.wopt},#{bean.wocl},#{bean.wosort},#{bean.wost})")
 	@Options(useGeneratedKeys=true,keyProperty="bean.woid")
 	public void add(@Param("bean")Word bean);
 	
 	@Override
-	@Update("UPDATE public.F1040 SET WOLSID=#{bean.wolsid},WOCT=#{bean.woct},WOPT=#{bean.wopt},WOCL=#{bean.wocl},WOST=#{bean.wost} WHERE WOID=#{bean.woid}")
-	public void update(@Param("bean")Word bean);
-	
-	@Override
 	@Update("<script>"
-		+ "<if test='mask.wolsid or mask.woct or mask.wopt or mask.wocl or mask.wost'>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
+		+ "<if test='mask.wolsid or mask.woct or mask.wopt or mask.wocl or mask.wosort or mask.wost'>"
 		+ "UPDATE public.F1040 "
 		+ "<set>"
 		+ "<if test='mask.wolsid'>WOLSID=#{bean.wolsid}, </if>"
 		+ "<if test='mask.woct'>WOCT=#{bean.woct}, </if>"
 		+ "<if test='mask.wopt'>WOPT=#{bean.wopt}, </if>"
 		+ "<if test='mask.wocl'>WOCL=#{bean.wocl}, </if>"
+		+ "<if test='mask.wosort'>WOSORT=#{bean.wosort}, </if>"
 		+ "<if test='mask.wost'>WOST=#{bean.wost}, </if>"
 		+ "</set>"
 		+ "WHERE WOID=#{bean.woid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F1040 SET WOLSID=#{bean.wolsid},WOCT=#{bean.woct},WOPT=#{bean.wopt},WOCL=#{bean.wocl},WOSORT=#{bean.wosort},WOST=#{bean.wost} WHERE WOID=#{bean.woid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Word bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Word bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F1040 WHERE WOID=#{woid}")
@@ -69,29 +77,28 @@ public interface WordMapper extends BeanMapper<Word,Integer>
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT WOID,WOLSID,WOCT,WOPT,WOCL,WOST FROM public.F1040 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Word> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.woid'>WOID, </if>"
 		+ "<if test='mask.wolsid'>WOLSID, </if>"
 		+ "<if test='mask.woct'>WOCT, </if>"
 		+ "<if test='mask.wopt'>WOPT, </if>"
 		+ "<if test='mask.wocl'>WOCL, </if>"
+		+ "<if test='mask.wosort'>WOSORT, </if>"
 		+ "<if test='mask.wost'>WOST, </if>"
 		+ "</trim>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT WOID,WOLSID,WOCT,WOPT,WOCL,WOSORT,WOST "
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "FROM public.F1040 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Word> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Word> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"

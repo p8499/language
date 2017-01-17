@@ -27,6 +27,19 @@ public class PronounceMask implements Mask
 	public PronounceMask()
 	{	
 	}
+	@Override
+	public PronounceMask all(boolean b)
+	{	this.pnid=b;
+		this.pnlsid=b;
+		this.pnct=b;
+		this.pnpi=b;
+		this.pntn=b;
+		this.pnco=b;
+		this.pnvo=b;
+		this.pncl=b;
+		this.pnrm=b;
+	return this;
+	}
 	public boolean getPnid()
 	{	return pnid;
 	}

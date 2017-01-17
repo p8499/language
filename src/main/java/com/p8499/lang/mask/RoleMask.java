@@ -13,6 +13,12 @@ public class RoleMask implements Mask
 	public RoleMask()
 	{	
 	}
+	@Override
+	public RoleMask all(boolean b)
+	{	this.rlid=b;
+		this.rlname=b;
+	return this;
+	}
 	public boolean getRlid()
 	{	return rlid;
 	}

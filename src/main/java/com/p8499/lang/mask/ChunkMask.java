@@ -21,6 +21,16 @@ public class ChunkMask implements Mask
 	public ChunkMask()
 	{	
 	}
+	@Override
+	public ChunkMask all(boolean b)
+	{	this.cpid=b;
+		this.cplsid=b;
+		this.cpsi=b;
+		this.cptg=b;
+		this.cpft=b;
+		this.cpsort=b;
+	return this;
+	}
 	public boolean getCpid()
 	{	return cpid;
 	}

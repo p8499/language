@@ -19,11 +19,9 @@ public interface PronounceMapper extends BeanMapper<Pronounce,Integer>
 	public boolean exists(@Param("pnid")Integer pnid);
 	
 	@Override
-	@Select("SELECT PNID,PNLSID,PNCT,PNPI,PNTN,PNCO,PNVO,PNCL,PNRM FROM public.F1011 WHERE PNID=#{pnid}")
-	public Pronounce get(@Param("pnid")Integer pnid);
-	
-	@Override
 	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<if test='mask.pnid or mask.pnlsid or mask.pnct or mask.pnpi or mask.pntn or mask.pnco or mask.pnvo or mask.pncl or mask.pnrm'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.pnid'>PNID, </if>"
@@ -38,8 +36,13 @@ public interface PronounceMapper extends BeanMapper<Pronounce,Integer>
 		+ "</trim>"
 		+ "FROM public.F1011 WHERE PNID=#{pnid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT PNID,PNLSID,PNCT,PNPI,PNTN,PNCO,PNVO,PNCL,PNRM FROM public.F1011 WHERE PNID=#{pnid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Pronounce getWithMask(@Param("pnid")Integer pnid,@Param("mask")Mask mask);
+	public Pronounce get(@Param("pnid")Integer pnid,@Param("mask")Mask mask);
 	
 	@Override
 	@Insert("INSERT INTO public.F1011 (PNLSID,PNCT,PNPI,PNTN,PNCO,PNVO,PNCL,PNRM) VALUES (#{bean.pnlsid},#{bean.pnct},#{bean.pnpi},#{bean.pntn},#{bean.pnco},#{bean.pnvo},#{bean.pncl},#{bean.pnrm})")
@@ -47,11 +50,9 @@ public interface PronounceMapper extends BeanMapper<Pronounce,Integer>
 	public void add(@Param("bean")Pronounce bean);
 	
 	@Override
-	@Update("UPDATE public.F1011 SET PNLSID=#{bean.pnlsid},PNCT=#{bean.pnct},PNPI=#{bean.pnpi},PNTN=#{bean.pntn},PNCO=#{bean.pnco},PNVO=#{bean.pnvo},PNCL=#{bean.pncl},PNRM=#{bean.pnrm} WHERE PNID=#{bean.pnid}")
-	public void update(@Param("bean")Pronounce bean);
-	
-	@Override
 	@Update("<script>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
 		+ "<if test='mask.pnlsid or mask.pnct or mask.pnpi or mask.pntn or mask.pnco or mask.pnvo or mask.pncl or mask.pnrm'>"
 		+ "UPDATE public.F1011 "
 		+ "<set>"
@@ -66,8 +67,13 @@ public interface PronounceMapper extends BeanMapper<Pronounce,Integer>
 		+ "</set>"
 		+ "WHERE PNID=#{bean.pnid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F1011 SET PNLSID=#{bean.pnlsid},PNCT=#{bean.pnct},PNPI=#{bean.pnpi},PNTN=#{bean.pntn},PNCO=#{bean.pnco},PNVO=#{bean.pnvo},PNCL=#{bean.pncl},PNRM=#{bean.pnrm} WHERE PNID=#{bean.pnid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Pronounce bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Pronounce bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F1011 WHERE PNID=#{pnid}")
@@ -75,15 +81,8 @@ public interface PronounceMapper extends BeanMapper<Pronounce,Integer>
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT PNID,PNLSID,PNCT,PNPI,PNTN,PNCO,PNVO,PNCL,PNRM FROM public.F1011 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Pronounce> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.pnid'>PNID, </if>"
 		+ "<if test='mask.pnlsid'>PNLSID, </if>"
@@ -95,12 +94,17 @@ public interface PronounceMapper extends BeanMapper<Pronounce,Integer>
 		+ "<if test='mask.pncl'>PNCL, </if>"
 		+ "<if test='mask.pnrm'>PNRM, </if>"
 		+ "</trim>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT PNID,PNLSID,PNCT,PNPI,PNTN,PNCO,PNVO,PNCL,PNRM "
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "FROM public.F1011 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Pronounce> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Pronounce> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"

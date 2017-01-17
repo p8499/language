@@ -11,8 +11,9 @@ public class SentenceMask implements Mask
 	protected boolean asusid=false;
 	protected boolean asupdd=false;
 	protected boolean asupdt=false;
+	protected boolean ascs=false;
 
-	public SentenceMask(boolean asid,boolean asatid,boolean assi,boolean ascont,boolean asst,boolean asusid,boolean asupdd,boolean asupdt)
+	public SentenceMask(boolean asid,boolean asatid,boolean assi,boolean ascont,boolean asst,boolean asusid,boolean asupdd,boolean asupdt,boolean ascs)
 	{	this.asid=asid;
 		this.asatid=asatid;
 		this.assi=assi;
@@ -21,9 +22,23 @@ public class SentenceMask implements Mask
 		this.asusid=asusid;
 		this.asupdd=asupdd;
 		this.asupdt=asupdt;
+		this.ascs=ascs;
 	}
 	public SentenceMask()
 	{	
+	}
+	@Override
+	public SentenceMask all(boolean b)
+	{	this.asid=b;
+		this.asatid=b;
+		this.assi=b;
+		this.ascont=b;
+		this.asst=b;
+		this.asusid=b;
+		this.asupdd=b;
+		this.asupdt=b;
+		this.ascs=b;
+	return this;
 	}
 	public boolean getAsid()
 	{	return asid;
@@ -79,6 +94,13 @@ public class SentenceMask implements Mask
 	}
 	public SentenceMask setAsupdt(boolean asupdt)
 	{	this.asupdt=asupdt;
+		return this;
+	}
+	public boolean getAscs()
+	{	return ascs;
+	}
+	public SentenceMask setAscs(boolean ascs)
+	{	this.ascs=ascs;
 		return this;
 	}
 }

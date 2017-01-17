@@ -19,11 +19,9 @@ public interface RoleauthorityMapper extends BeanMapper<Roleauthority,Integer>
 	public boolean exists(@Param("raid")Integer raid);
 	
 	@Override
-	@Select("SELECT RAID,RARLID,RAAUID FROM public.F0321 WHERE RAID=#{raid}")
-	public Roleauthority get(@Param("raid")Integer raid);
-	
-	@Override
 	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<if test='mask.raid or mask.rarlid or mask.raauid'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.raid'>RAID, </if>"
@@ -32,8 +30,13 @@ public interface RoleauthorityMapper extends BeanMapper<Roleauthority,Integer>
 		+ "</trim>"
 		+ "FROM public.F0321 WHERE RAID=#{raid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT RAID,RARLID,RAAUID FROM public.F0321 WHERE RAID=#{raid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Roleauthority getWithMask(@Param("raid")Integer raid,@Param("mask")Mask mask);
+	public Roleauthority get(@Param("raid")Integer raid,@Param("mask")Mask mask);
 	
 	@Override
 	@Insert("INSERT INTO public.F0321 (RARLID,RAAUID) VALUES (#{bean.rarlid},#{bean.raauid})")
@@ -41,11 +44,9 @@ public interface RoleauthorityMapper extends BeanMapper<Roleauthority,Integer>
 	public void add(@Param("bean")Roleauthority bean);
 	
 	@Override
-	@Update("UPDATE public.F0321 SET RARLID=#{bean.rarlid},RAAUID=#{bean.raauid} WHERE RAID=#{bean.raid}")
-	public void update(@Param("bean")Roleauthority bean);
-	
-	@Override
 	@Update("<script>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
 		+ "<if test='mask.rarlid or mask.raauid'>"
 		+ "UPDATE public.F0321 "
 		+ "<set>"
@@ -54,8 +55,13 @@ public interface RoleauthorityMapper extends BeanMapper<Roleauthority,Integer>
 		+ "</set>"
 		+ "WHERE RAID=#{bean.raid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F0321 SET RARLID=#{bean.rarlid},RAAUID=#{bean.raauid} WHERE RAID=#{bean.raid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Roleauthority bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Roleauthority bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F0321 WHERE RAID=#{raid}")
@@ -63,26 +69,24 @@ public interface RoleauthorityMapper extends BeanMapper<Roleauthority,Integer>
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT RAID,RARLID,RAAUID FROM public.F0321 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Roleauthority> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.raid'>RAID, </if>"
 		+ "<if test='mask.rarlid'>RARLID, </if>"
 		+ "<if test='mask.raauid'>RAAUID, </if>"
 		+ "</trim>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT RAID,RARLID,RAAUID "
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "FROM public.F0321 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Roleauthority> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Roleauthority> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"

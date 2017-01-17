@@ -19,11 +19,9 @@ public interface UserroleMapper extends BeanMapper<Userrole,Integer>
 	public boolean exists(@Param("urid")Integer urid);
 	
 	@Override
-	@Select("SELECT URID,URUSID,URRLID FROM public.F0311 WHERE URID=#{urid}")
-	public Userrole get(@Param("urid")Integer urid);
-	
-	@Override
 	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<if test='mask.urid or mask.urusid or mask.urrlid'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.urid'>URID, </if>"
@@ -32,8 +30,13 @@ public interface UserroleMapper extends BeanMapper<Userrole,Integer>
 		+ "</trim>"
 		+ "FROM public.F0311 WHERE URID=#{urid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT URID,URUSID,URRLID FROM public.F0311 WHERE URID=#{urid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Userrole getWithMask(@Param("urid")Integer urid,@Param("mask")Mask mask);
+	public Userrole get(@Param("urid")Integer urid,@Param("mask")Mask mask);
 	
 	@Override
 	@Insert("INSERT INTO public.F0311 (URUSID,URRLID) VALUES (#{bean.urusid},#{bean.urrlid})")
@@ -41,11 +44,9 @@ public interface UserroleMapper extends BeanMapper<Userrole,Integer>
 	public void add(@Param("bean")Userrole bean);
 	
 	@Override
-	@Update("UPDATE public.F0311 SET URUSID=#{bean.urusid},URRLID=#{bean.urrlid} WHERE URID=#{bean.urid}")
-	public void update(@Param("bean")Userrole bean);
-	
-	@Override
 	@Update("<script>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
 		+ "<if test='mask.urusid or mask.urrlid'>"
 		+ "UPDATE public.F0311 "
 		+ "<set>"
@@ -54,8 +55,13 @@ public interface UserroleMapper extends BeanMapper<Userrole,Integer>
 		+ "</set>"
 		+ "WHERE URID=#{bean.urid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F0311 SET URUSID=#{bean.urusid},URRLID=#{bean.urrlid} WHERE URID=#{bean.urid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Userrole bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Userrole bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F0311 WHERE URID=#{urid}")
@@ -63,26 +69,24 @@ public interface UserroleMapper extends BeanMapper<Userrole,Integer>
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT URID,URUSID,URRLID FROM public.F0311 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Userrole> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.urid'>URID, </if>"
 		+ "<if test='mask.urusid'>URUSID, </if>"
 		+ "<if test='mask.urrlid'>URRLID, </if>"
 		+ "</trim>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT URID,URUSID,URRLID "
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "FROM public.F0311 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Userrole> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Userrole> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"
@@ -101,16 +105,16 @@ public interface UserroleMapper extends BeanMapper<Userrole,Integer>
 	
 	@Override
 	@Select("SELECT SUM(C)>0 FROM( "
-		+ "SELECT COUNT(*) C FROM public.F0301 WHERE USID=#{bean.urusid} "
-		+ "UNION ALL SELECT COUNT(*) C FROM public.F0310 WHERE RLID=#{bean.urrlid} "
+		+ "SELECT COUNT(*) C FROM public.F0310 WHERE RLID=#{bean.urrlid} "
+		+ "UNION ALL SELECT COUNT(*) C FROM public.F0301 WHERE USID=#{bean.urusid} "
 		+ ") T")
 	public boolean referencing(@Param("bean")Userrole bean);
 	
-	@Select("SELECT COUNT(*)>0 FROM public.F0301 WHERE USID=#{urusid}")
-	public boolean referencingUrusid(@Param("urusid")String urusid);
-	
 	@Select("SELECT COUNT(*)>0 FROM public.F0310 WHERE RLID=#{urrlid}")
 	public boolean referencingUrrlid(@Param("urrlid")String urrlid);
+	
+	@Select("SELECT COUNT(*)>0 FROM public.F0301 WHERE USID=#{urusid}")
+	public boolean referencingUrusid(@Param("urusid")String urusid);
 	
 	@Override
 	@Select("SELECT 1")

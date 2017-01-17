@@ -18,11 +18,9 @@ public interface RoleMapper extends BeanMapper<Role,String>
 	public boolean exists(@Param("rlid")String rlid);
 	
 	@Override
-	@Select("SELECT RLID,RLNAME FROM public.F0310 WHERE RLID=#{rlid}")
-	public Role get(@Param("rlid")String rlid);
-	
-	@Override
 	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<if test='mask.rlid or mask.rlname'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.rlid'>RLID, </if>"
@@ -30,19 +28,22 @@ public interface RoleMapper extends BeanMapper<Role,String>
 		+ "</trim>"
 		+ "FROM public.F0310 WHERE RLID=#{rlid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT RLID,RLNAME FROM public.F0310 WHERE RLID=#{rlid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Role getWithMask(@Param("rlid")String rlid,@Param("mask")Mask mask);
+	public Role get(@Param("rlid")String rlid,@Param("mask")Mask mask);
 	
 	@Override
 	@Insert("INSERT INTO public.F0310 (RLID,RLNAME) VALUES (#{bean.rlid},#{bean.rlname})")
 	public void add(@Param("bean")Role bean);
 	
 	@Override
-	@Update("UPDATE public.F0310 SET RLNAME=#{bean.rlname} WHERE RLID=#{bean.rlid}")
-	public void update(@Param("bean")Role bean);
-	
-	@Override
 	@Update("<script>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
 		+ "<if test='mask.rlname'>"
 		+ "UPDATE public.F0310 "
 		+ "<set>"
@@ -50,8 +51,13 @@ public interface RoleMapper extends BeanMapper<Role,String>
 		+ "</set>"
 		+ "WHERE RLID=#{bean.rlid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F0310 SET RLNAME=#{bean.rlname} WHERE RLID=#{bean.rlid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Role bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Role bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F0310 WHERE RLID=#{rlid}")
@@ -59,25 +65,23 @@ public interface RoleMapper extends BeanMapper<Role,String>
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT RLID,RLNAME FROM public.F0310 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Role> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.rlid'>RLID, </if>"
 		+ "<if test='mask.rlname'>RLNAME, </if>"
 		+ "</trim>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT RLID,RLNAME "
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "FROM public.F0310 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Role> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Role> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"

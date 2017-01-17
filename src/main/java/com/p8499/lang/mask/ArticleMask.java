@@ -10,7 +10,9 @@ public class ArticleMask implements Mask
 	protected boolean atusid=false;
 	protected boolean atupdd=false;
 	protected boolean atupdt=false;
+	protected boolean atbrf=false;
 	protected boolean atcgname=false;
+	protected boolean atusname=false;
 	protected boolean atcsa=false;
 	protected boolean atcsb=false;
 	protected boolean atcsc=false;
@@ -18,7 +20,7 @@ public class ArticleMask implements Mask
 	protected boolean atcse=false;
 	protected boolean atcsf=false;
 
-	public ArticleMask(boolean atid,boolean atcgid,boolean atsi,boolean atname,boolean atusid,boolean atupdd,boolean atupdt,boolean atcgname,boolean atcsa,boolean atcsb,boolean atcsc,boolean atcsd,boolean atcse,boolean atcsf)
+	public ArticleMask(boolean atid,boolean atcgid,boolean atsi,boolean atname,boolean atusid,boolean atupdd,boolean atupdt,boolean atbrf,boolean atcgname,boolean atusname,boolean atcsa,boolean atcsb,boolean atcsc,boolean atcsd,boolean atcse,boolean atcsf)
 	{	this.atid=atid;
 		this.atcgid=atcgid;
 		this.atsi=atsi;
@@ -26,7 +28,9 @@ public class ArticleMask implements Mask
 		this.atusid=atusid;
 		this.atupdd=atupdd;
 		this.atupdt=atupdt;
+		this.atbrf=atbrf;
 		this.atcgname=atcgname;
+		this.atusname=atusname;
 		this.atcsa=atcsa;
 		this.atcsb=atcsb;
 		this.atcsc=atcsc;
@@ -36,6 +40,26 @@ public class ArticleMask implements Mask
 	}
 	public ArticleMask()
 	{	
+	}
+	@Override
+	public ArticleMask all(boolean b)
+	{	this.atid=b;
+		this.atcgid=b;
+		this.atsi=b;
+		this.atname=b;
+		this.atusid=b;
+		this.atupdd=b;
+		this.atupdt=b;
+		this.atbrf=b;
+		this.atcgname=b;
+		this.atusname=b;
+		this.atcsa=b;
+		this.atcsb=b;
+		this.atcsc=b;
+		this.atcsd=b;
+		this.atcse=b;
+		this.atcsf=b;
+	return this;
 	}
 	public boolean getAtid()
 	{	return atid;
@@ -86,11 +110,25 @@ public class ArticleMask implements Mask
 	{	this.atupdt=atupdt;
 		return this;
 	}
+	public boolean getAtbrf()
+	{	return atbrf;
+	}
+	public ArticleMask setAtbrf(boolean atbrf)
+	{	this.atbrf=atbrf;
+		return this;
+	}
 	public boolean getAtcgname()
 	{	return atcgname;
 	}
 	public ArticleMask setAtcgname(boolean atcgname)
 	{	this.atcgname=atcgname;
+		return this;
+	}
+	public boolean getAtusname()
+	{	return atusname;
+	}
+	public ArticleMask setAtusname(boolean atusname)
+	{	this.atusname=atusname;
 		return this;
 	}
 	public boolean getAtcsa()

@@ -15,16 +15,14 @@ import com.p8499.lang.bean.Sentence;
 @Component("sentenceMapper")
 public interface SentenceMapper extends BeanMapper<Sentence,Integer>
 {	@Override
-	@Select("SELECT COUNT(*)>0 FROM public.F1120 WHERE ASID=#{asid}")
+	@Select("SELECT COUNT(*)>0 FROM public.V1120 WHERE ASID=#{asid}")
 	public boolean exists(@Param("asid")Integer asid);
 	
 	@Override
-	@Select("SELECT ASID,ASATID,ASSI,ASCONT,ASST,ASUSID,ASUPDD,ASUPDT FROM public.F1120 WHERE ASID=#{asid}")
-	public Sentence get(@Param("asid")Integer asid);
-	
-	@Override
 	@Select("<script>"
-		+ "<if test='mask.asid or mask.asatid or mask.assi or mask.ascont or mask.asst or mask.asusid or mask.asupdd or mask.asupdt'>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
+		+ "<if test='mask.asid or mask.asatid or mask.assi or mask.ascont or mask.asst or mask.asusid or mask.asupdd or mask.asupdt or mask.ascs'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.asid'>ASID, </if>"
 		+ "<if test='mask.asatid'>ASATID, </if>"
@@ -34,11 +32,17 @@ public interface SentenceMapper extends BeanMapper<Sentence,Integer>
 		+ "<if test='mask.asusid'>ASUSID, </if>"
 		+ "<if test='mask.asupdd'>ASUPDD, </if>"
 		+ "<if test='mask.asupdt'>ASUPDT, </if>"
+		+ "<if test='mask.ascs'>ASCS, </if>"
 		+ "</trim>"
-		+ "FROM public.F1120 WHERE ASID=#{asid}"
+		+ "FROM public.V1120 WHERE ASID=#{asid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT ASID,ASATID,ASSI,ASCONT,ASST,ASUSID,ASUPDD,ASUPDT,ASCS FROM public.V1120 WHERE ASID=#{asid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Sentence getWithMask(@Param("asid")Integer asid,@Param("mask")Mask mask);
+	public Sentence get(@Param("asid")Integer asid,@Param("mask")Mask mask);
 	
 	@Override
 	@Insert("INSERT INTO public.F1120 (ASATID,ASSI,ASCONT,ASST,ASUSID,ASUPDD,ASUPDT) VALUES (#{bean.asatid},#{bean.assi},#{bean.ascont},#{bean.asst},#{bean.asusid},#{bean.asupdd},#{bean.asupdt})")
@@ -46,11 +50,9 @@ public interface SentenceMapper extends BeanMapper<Sentence,Integer>
 	public void add(@Param("bean")Sentence bean);
 	
 	@Override
-	@Update("UPDATE public.F1120 SET ASATID=#{bean.asatid},ASSI=#{bean.assi},ASCONT=#{bean.ascont},ASST=#{bean.asst},ASUSID=#{bean.asusid},ASUPDD=#{bean.asupdd},ASUPDT=#{bean.asupdt} WHERE ASID=#{bean.asid}")
-	public void update(@Param("bean")Sentence bean);
-	
-	@Override
 	@Update("<script>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
 		+ "<if test='mask.asatid or mask.assi or mask.ascont or mask.asst or mask.asusid or mask.asupdd or mask.asupdt'>"
 		+ "UPDATE public.F1120 "
 		+ "<set>"
@@ -64,8 +66,13 @@ public interface SentenceMapper extends BeanMapper<Sentence,Integer>
 		+ "</set>"
 		+ "WHERE ASID=#{bean.asid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F1120 SET ASATID=#{bean.asatid},ASSI=#{bean.assi},ASCONT=#{bean.ascont},ASST=#{bean.asst},ASUSID=#{bean.asusid},ASUPDD=#{bean.asupdd},ASUPDT=#{bean.asupdt} WHERE ASID=#{bean.asid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Sentence bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Sentence bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F1120 WHERE ASID=#{asid}")
@@ -73,15 +80,8 @@ public interface SentenceMapper extends BeanMapper<Sentence,Integer>
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT ASID,ASATID,ASSI,ASCONT,ASST,ASUSID,ASUPDD,ASUPDT FROM public.F1120 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Sentence> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.asid'>ASID, </if>"
 		+ "<if test='mask.asatid'>ASATID, </if>"
@@ -91,40 +91,46 @@ public interface SentenceMapper extends BeanMapper<Sentence,Integer>
 		+ "<if test='mask.asusid'>ASUSID, </if>"
 		+ "<if test='mask.asupdd'>ASUPDD, </if>"
 		+ "<if test='mask.asupdt'>ASUPDT, </if>"
+		+ "<if test='mask.ascs'>ASCS, </if>"
 		+ "</trim>"
-		+ "FROM public.F1120 "
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT ASID,ASATID,ASSI,ASCONT,ASST,ASUSID,ASUPDD,ASUPDT,ASCS "
+		+ "</otherwise>"
+		+ "</choose>"
+		+ "FROM public.V1120 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Sentence> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Sentence> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT COUNT(*) FROM public.F1120 "
+		+ "SELECT COUNT(*) FROM public.V1120 "
 		+ "<if test='filter!=null'>WHERE ${filter}</if> "
 		+ "</script>")
 	public long count(@Param("filter")String filter);
 	
-	@Select("SELECT if(MAX(assi),null,0)+10 FROM public.F1120 WHERE asatid=#{asatid}")
+	@Select("SELECT COALESCE(MAX(assi),0)+10 FROM public.V1120 WHERE asatid=#{asatid}")
 	public Integer nextAssi(@Param("asatid")Integer asatid);
 	
 	@Override
 	@Select("<script>"
 		+ "SELECT SUM(C)=0 FROM( "
-		+ "SELECT COUNT(*) C FROM public.F1120 WHERE ASATID=#{bean.asatid} AND ASSI=#{bean.assi}<if test='bean.asid!=null'> AND ASID!=#{bean.asid}</if> "
+		+ "SELECT COUNT(*) C FROM public.V1120 WHERE ASATID=#{bean.asatid} AND ASSI=#{bean.assi}<if test='bean.asid!=null'> AND ASID!=#{bean.asid}</if> "
 		+ ") T"
 		+ "</script>")
 	public boolean unique(@Param("bean")Sentence bean);
 	
 	@Override
 	@Select("SELECT SUM(C)>0 FROM( "
-		+ "SELECT COUNT(*) C FROM public.F1110 WHERE ATID=#{bean.asatid} "
+		+ "SELECT COUNT(*) C FROM public.V1110 WHERE ATID=#{bean.asatid} "
 		+ "UNION ALL SELECT COUNT(*) C FROM public.F0301 WHERE USID=#{bean.asusid} "
 		+ ") T")
 	public boolean referencing(@Param("bean")Sentence bean);
 	
-	@Select("SELECT COUNT(*)>0 FROM public.F1110 WHERE ATID=#{asatid}")
+	@Select("SELECT COUNT(*)>0 FROM public.V1110 WHERE ATID=#{asatid}")
 	public boolean referencingAsatid(@Param("asatid")Integer asatid);
 	
 	@Select("SELECT COUNT(*)>0 FROM public.F0301 WHERE USID=#{asusid}")

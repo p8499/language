@@ -19,11 +19,9 @@ public interface WordflowMapper extends BeanMapper<Wordflow,Integer>
 	public boolean exists(@Param("waid")Integer waid);
 	
 	@Override
-	@Select("SELECT WAID,WAWOID,WASI,WAPT,WAST,WAUSID,WACRDD,WACRDT,WAUPDD,WAUPDT FROM public.F1041 WHERE WAID=#{waid}")
-	public Wordflow get(@Param("waid")Integer waid);
-	
-	@Override
 	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<if test='mask.waid or mask.wawoid or mask.wasi or mask.wapt or mask.wast or mask.wausid or mask.wacrdd or mask.wacrdt or mask.waupdd or mask.waupdt'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.waid'>WAID, </if>"
@@ -39,8 +37,13 @@ public interface WordflowMapper extends BeanMapper<Wordflow,Integer>
 		+ "</trim>"
 		+ "FROM public.F1041 WHERE WAID=#{waid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT WAID,WAWOID,WASI,WAPT,WAST,WAUSID,WACRDD,WACRDT,WAUPDD,WAUPDT FROM public.F1041 WHERE WAID=#{waid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public Wordflow getWithMask(@Param("waid")Integer waid,@Param("mask")Mask mask);
+	public Wordflow get(@Param("waid")Integer waid,@Param("mask")Mask mask);
 	
 	@Override
 	@Insert("INSERT INTO public.F1041 (WAWOID,WASI,WAPT,WAST,WAUSID,WACRDD,WACRDT,WAUPDD,WAUPDT) VALUES (#{bean.wawoid},#{bean.wasi},#{bean.wapt},#{bean.wast},#{bean.wausid},#{bean.wacrdd},#{bean.wacrdt},#{bean.waupdd},#{bean.waupdt})")
@@ -48,11 +51,9 @@ public interface WordflowMapper extends BeanMapper<Wordflow,Integer>
 	public void add(@Param("bean")Wordflow bean);
 	
 	@Override
-	@Update("UPDATE public.F1041 SET WAWOID=#{bean.wawoid},WASI=#{bean.wasi},WAPT=#{bean.wapt},WAST=#{bean.wast},WAUSID=#{bean.wausid},WACRDD=#{bean.wacrdd},WACRDT=#{bean.wacrdt},WAUPDD=#{bean.waupdd},WAUPDT=#{bean.waupdt} WHERE WAID=#{bean.waid}")
-	public void update(@Param("bean")Wordflow bean);
-	
-	@Override
 	@Update("<script>"
+		+ "<choose>"//todo
+		+ "<when test='mask!=null'>"//todo
 		+ "<if test='mask.wawoid or mask.wasi or mask.wapt or mask.wast or mask.wausid or mask.wacrdd or mask.wacrdt or mask.waupdd or mask.waupdt'>"
 		+ "UPDATE public.F1041 "
 		+ "<set>"
@@ -68,8 +69,13 @@ public interface WordflowMapper extends BeanMapper<Wordflow,Integer>
 		+ "</set>"
 		+ "WHERE WAID=#{bean.waid}"
 		+ "</if>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "UPDATE public.F1041 SET WAWOID=#{bean.wawoid},WASI=#{bean.wasi},WAPT=#{bean.wapt},WAST=#{bean.wast},WAUSID=#{bean.wausid},WACRDD=#{bean.wacrdd},WACRDT=#{bean.wacrdt},WAUPDD=#{bean.waupdd},WAUPDT=#{bean.waupdt} WHERE WAID=#{bean.waid}"
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "</script>")
-	public void updateWithMask(@Param("bean")Wordflow bean,@Param("mask")Mask mask);
+	public void update(@Param("bean")Wordflow bean,@Param("mask")Mask mask);
 	
 	@Override
 	@Delete("DELETE FROM public.F1041 WHERE WAID=#{waid}")
@@ -77,15 +83,8 @@ public interface WordflowMapper extends BeanMapper<Wordflow,Integer>
 	
 	@Override
 	@Select("<script>"
-		+ "SELECT WAID,WAWOID,WASI,WAPT,WAST,WAUSID,WACRDD,WACRDT,WAUPDD,WAUPDT FROM public.F1041 "
-		+ "<if test='filter!=null'>WHERE ${filter} </if>"
-		+ "<if test='order!=null'>ORDER BY ${order} </if>"
-		+ "LIMIT #{count} OFFSET #{start}"
-		+ "</script>")
-	public List<Wordflow> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count);
-	
-	@Override
-	@Select("<script>"
+		+ "<choose>"
+		+ "<when test='mask!=null'>"
 		+ "<trim prefix='SELECT' suffixOverrides=','>"
 		+ "<if test='mask.waid'>WAID, </if>"
 		+ "<if test='mask.wawoid'>WAWOID, </if>"
@@ -98,12 +97,17 @@ public interface WordflowMapper extends BeanMapper<Wordflow,Integer>
 		+ "<if test='mask.waupdd'>WAUPDD, </if>"
 		+ "<if test='mask.waupdt'>WAUPDT, </if>"
 		+ "</trim>"
+		+ "</when>"
+		+ "<otherwise>"
+		+ "SELECT WAID,WAWOID,WASI,WAPT,WAST,WAUSID,WACRDD,WACRDT,WAUPDD,WAUPDT "
+		+ "</otherwise>"
+		+ "</choose>"
 		+ "FROM public.F1041 "
 		+ "<if test='filter!=null'>WHERE ${filter} </if>"
 		+ "<if test='order!=null'>ORDER BY ${order} </if>"
 		+ "LIMIT #{count} OFFSET #{start}"
 		+ "</script>")
-	public List<Wordflow> queryWithMask(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
+	public List<Wordflow> query(@Param("filter")String filter,@Param("order")String order,@Param("start")long start,@Param("count")long count,@Param("mask")Mask mask);
 	
 	@Override
 	@Select("<script>"
@@ -112,7 +116,7 @@ public interface WordflowMapper extends BeanMapper<Wordflow,Integer>
 		+ "</script>")
 	public long count(@Param("filter")String filter);
 	
-	@Select("SELECT if(MAX(wasi),null,0)+1 FROM public.F1041 WHERE wawoid=#{wawoid}")
+	@Select("SELECT COALESCE(MAX(wasi),0)+1 FROM public.F1041 WHERE wawoid=#{wawoid}")
 	public Integer nextWasi(@Param("wawoid")Integer wawoid);
 	
 	@Override
