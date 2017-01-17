@@ -56,7 +56,7 @@ public class UserCheckController extends RestCheckControllerBase<User,String>
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("userK"+bean.getUsid())&&!reserved.isReservedBy("userK"+bean.getUsid(),session.getId()))
 			return finish("",response,423);
-		User origBean=((UserMapper)bMapper).get(bean.getUsid());
+		User origBean=((UserMapper)bMapper).get(bean.getUsid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!user_wa&&!origBean.getUsid().equals(getUser(session)))
@@ -80,7 +80,7 @@ public class UserCheckController extends RestCheckControllerBase<User,String>
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("userK"+usid))
 			return finish("",response,423);
-		User origBean=((UserMapper)bMapper).get(usid);
+		User origBean=((UserMapper)bMapper).get(usid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		if(!user_wa&&!origBean.getUsid().equals(getUser(session)))

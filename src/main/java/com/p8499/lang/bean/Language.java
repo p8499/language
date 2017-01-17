@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 @JsonInclude((JsonInclude.Include.NON_NULL))
 public class Language implements Bean
 {	public static final String TABLE="public.F1010";
+	public static final String VIEW="public.F1010";
 	public static final String NAME="Language";
 	public static final String FIELD_LSID="LSID";
 	public static final String FIELD_LSNAME="LSNAME";

@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 @JsonInclude((JsonInclude.Include.NON_NULL))
 public class Segmentflow implements Bean
 {	public static final String TABLE="public.F1131";
+	public static final String VIEW="public.F1131";
 	public static final String NAME="Segmentflow";
 	public static final String FIELD_TAID="TAID";
 	public static final String FIELD_TAASID="TAASID";
@@ -25,6 +26,7 @@ public class Segmentflow implements Bean
 	public static final Integer TAST_VOTING=1;
 	public static final Integer TAST_PASSED=2;
 	public static final Integer TAST_DENIED=3;
+	public static final Integer TAST_RECALLED=4;
 	protected Integer taid=null;
 	protected Integer taasid=null;
 	protected Integer tasi=null;

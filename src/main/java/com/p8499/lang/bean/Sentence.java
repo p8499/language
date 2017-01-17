@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 @JsonInclude((JsonInclude.Include.NON_NULL))
 public class Sentence implements Bean
 {	public static final String TABLE="public.F1120";
+	public static final String VIEW="public.V1120";
 	public static final String NAME="Sentence";
 	public static final String FIELD_ASID="ASID";
 	public static final String FIELD_ASATID="ASATID";
@@ -19,6 +20,7 @@ public class Sentence implements Bean
 	public static final String FIELD_ASUSID="ASUSID";
 	public static final String FIELD_ASUPDD="ASUPDD";
 	public static final String FIELD_ASUPDT="ASUPDT";
+	public static final String FIELD_ASCS="ASCS";
 	public static final Integer ASST_DISABLED=-1;
 	public static final Integer ASST_ENABLED=0;
 	protected Integer asid=null;
@@ -29,8 +31,9 @@ public class Sentence implements Bean
 	protected String asusid=null;
 	protected String asupdd=null;
 	protected String asupdt=null;
+	protected String ascs=null;
 
-	public Sentence(Integer asid,Integer asatid,Integer assi,String ascont,Integer asst,String asusid,String asupdd,String asupdt)
+	public Sentence(Integer asid,Integer asatid,Integer assi,String ascont,Integer asst,String asusid,String asupdd,String asupdt,String ascs)
 	{	this.asid=asid;
 		this.asatid=asatid;
 		this.assi=assi;
@@ -39,6 +42,7 @@ public class Sentence implements Bean
 		this.asusid=asusid;
 		this.asupdd=asupdd;
 		this.asupdt=asupdt;
+		this.ascs=ascs;
 	}
 	public Sentence()
 	{	
@@ -50,7 +54,7 @@ public class Sentence implements Bean
 	@Override
 	public Sentence clone()
 	{
-		return new Sentence(asid,asatid,assi,ascont,asst,asusid,asupdd,asupdt);
+		return new Sentence(asid,asatid,assi,ascont,asst,asusid,asupdd,asupdt,ascs);
 	}
 	@Null(groups={Add.class})
 	@NotNull(groups={Update.class})
@@ -131,6 +135,16 @@ public class Sentence implements Bean
 	}
 	public Sentence setAsupdt(String asupdt)
 	{	this.asupdt=asupdt;
+		return this;
+	}
+	
+	@Size(max=1)
+	//@SomeConstraint(groups={Add.class,Update.class})
+	public String getAscs()
+	{	return ascs;
+	}
+	public Sentence setAscs(String ascs)
+	{	this.ascs=ascs;
 		return this;
 	}
 }

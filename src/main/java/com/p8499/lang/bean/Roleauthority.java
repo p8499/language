@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 @JsonInclude((JsonInclude.Include.NON_NULL))
 public class Roleauthority implements Bean
 {	public static final String TABLE="public.F0321";
+	public static final String VIEW="public.F0321";
 	public static final String NAME="Roleauthority";
 	public static final String FIELD_RAID="RAID";
 	public static final String FIELD_RARLID="RARLID";

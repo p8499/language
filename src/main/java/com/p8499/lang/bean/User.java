@@ -9,12 +9,14 @@ import javax.validation.constraints.Size;
 @JsonInclude((JsonInclude.Include.NON_NULL))
 public class User implements Bean
 {	public static final String TABLE="public.F0301";
+	public static final String VIEW="public.F0301";
 	public static final String NAME="User";
 	public static final String FIELD_USID="USID";
 	public static final String FIELD_USPSWD="USPSWD";
 	public static final String FIELD_USNAME="USNAME";
 	public static final String FIELD_USST="USST";
 	public static final String FIELD_USLSID="USLSID";
+	public static final String FIELD_USPN="USPN";
 	public static final Integer USST_DISABLED=-1;
 	public static final Integer USST_ENABLED=0;
 	protected String usid=null;
@@ -22,13 +24,15 @@ public class User implements Bean
 	protected String usname=null;
 	protected Integer usst=null;
 	protected String uslsid=null;
+	protected Integer uspn=null;
 
-	public User(String usid,String uspswd,String usname,Integer usst,String uslsid)
+	public User(String usid,String uspswd,String usname,Integer usst,String uslsid,Integer uspn)
 	{	this.usid=usid;
 		this.uspswd=uspswd;
 		this.usname=usname;
 		this.usst=usst;
 		this.uslsid=uslsid;
+		this.uspn=uspn;
 	}
 	public User()
 	{	
@@ -40,7 +44,7 @@ public class User implements Bean
 	@Override
 	public User clone()
 	{
-		return new User(usid,uspswd,usname,usst,uslsid);
+		return new User(usid,uspswd,usname,usst,uslsid,uspn);
 	}
 	@NotNull(groups={Add.class,Update.class})
 	//@SomeConstraint(groups={Add.class,Update.class})
@@ -92,6 +96,16 @@ public class User implements Bean
 	}
 	public User setUslsid(String uslsid)
 	{	this.uslsid=uslsid;
+		return this;
+	}
+	
+	@NotNull(groups={Add.class,Update.class})
+	//@SomeConstraint(groups={Add.class,Update.class})
+	public Integer getUspn()
+	{	return uspn;
+	}
+	public User setUspn(Integer uspn)
+	{	this.uspn=uspn;
 		return this;
 	}
 }

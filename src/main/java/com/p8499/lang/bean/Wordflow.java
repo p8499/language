@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 @JsonInclude((JsonInclude.Include.NON_NULL))
 public class Wordflow implements Bean
 {	public static final String TABLE="public.F1041";
+	public static final String VIEW="public.F1041";
 	public static final String NAME="Wordflow";
 	public static final String FIELD_WAID="WAID";
 	public static final String FIELD_WAWOID="WAWOID";

@@ -56,7 +56,7 @@ public class RoleauthorityCheckController extends RestCheckControllerBase<Roleau
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("rlauK"+bean.getRaid())&&!reserved.isReservedBy("rlauK"+bean.getRaid(),session.getId()))
 			return finish("",response,423);
-		Roleauthority origBean=((RoleauthorityMapper)bMapper).get(bean.getRaid());
+		Roleauthority origBean=((RoleauthorityMapper)bMapper).get(bean.getRaid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!((RoleauthorityMapper)bMapper).unique(bean))
@@ -78,7 +78,7 @@ public class RoleauthorityCheckController extends RestCheckControllerBase<Roleau
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("rlauK"+raid))
 			return finish("",response,423);
-		Roleauthority origBean=((RoleauthorityMapper)bMapper).get(raid);
+		Roleauthority origBean=((RoleauthorityMapper)bMapper).get(raid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		List<List<String>> referencedErrors=referenced(origBean);

@@ -56,7 +56,7 @@ public class PronounceCheckController extends RestCheckControllerBase<Pronounce,
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("pronK"+bean.getPnid())&&!reserved.isReservedBy("pronK"+bean.getPnid(),session.getId()))
 			return finish("",response,423);
-		Pronounce origBean=((PronounceMapper)bMapper).get(bean.getPnid());
+		Pronounce origBean=((PronounceMapper)bMapper).get(bean.getPnid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!((PronounceMapper)bMapper).unique(bean))
@@ -78,7 +78,7 @@ public class PronounceCheckController extends RestCheckControllerBase<Pronounce,
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("pronK"+pnid))
 			return finish("",response,423);
-		Pronounce origBean=((PronounceMapper)bMapper).get(pnid);
+		Pronounce origBean=((PronounceMapper)bMapper).get(pnid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		List<List<String>> referencedErrors=referenced(origBean);

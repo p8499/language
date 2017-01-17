@@ -56,7 +56,7 @@ public class WordflowCheckController extends RestCheckControllerBase<Wordflow,In
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("wdflK"+bean.getWaid())&&!reserved.isReservedBy("wdflK"+bean.getWaid(),session.getId()))
 			return finish("",response,423);
-		Wordflow origBean=((WordflowMapper)bMapper).get(bean.getWaid());
+		Wordflow origBean=((WordflowMapper)bMapper).get(bean.getWaid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!wdfl_wa&&!origBean.getWausid().equals(getUser(session)))
@@ -80,7 +80,7 @@ public class WordflowCheckController extends RestCheckControllerBase<Wordflow,In
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("wdflK"+waid))
 			return finish("",response,423);
-		Wordflow origBean=((WordflowMapper)bMapper).get(waid);
+		Wordflow origBean=((WordflowMapper)bMapper).get(waid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		if(!wdfl_wa&&!origBean.getWausid().equals(getUser(session)))

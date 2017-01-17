@@ -6,7 +6,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
-	<context:property-placeholder location="WEB-INF/postgresql.properties"/>
+	<context:property-placeholder location="WEB-INF/app.properties"/>
 	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
 		<property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
 	</bean> 
@@ -25,8 +25,19 @@
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="com.p8499.lang.mapper"/>
 	</bean>
-	<context:component-scan base-package="com.p8499.lang.controller"/>
+	<bean id="singleColorFactory" class="org.patchca.color.SingleColorFactory"/>
+	<bean id="curvesRippleFilterFactory" class="org.patchca.filter.predefined.CurvesRippleFilterFactory"/>
+	<bean id="configurableCaptchaService" class="org.patchca.service.ConfigurableCaptchaService">
+		<property name="colorFactory" ref="singleColorFactory"/>
+		<property name="filterFactory" ref="curvesRippleFilterFactory"/>
+	</bean>
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" p:defaultEncoding="UTF-8" p:maxUploadSize="5400000"/>
 	<context:component-scan base-package="com.p8499.lang.listener"/>
+	<context:component-scan base-package="com.p8499.lang.controller"/>
+	<context:component-scan base-package="com.p8499.lang.trigger"/>
+	<context:component-scan base-package="com.p8499.lang.task"/>
 	<mvc:annotation-driven enable-matrix-variables="true"/>
-	<task:annotation-driven/>
+	<task:executor id="executor" pool-size="3"/>  
+    <task:scheduler id="scheduler" pool-size="3"/>  
+    <task:annotation-driven scheduler="scheduler" executor="executor"/>
 </beans>

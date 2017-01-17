@@ -56,7 +56,7 @@ public class ArticleCheckController extends RestCheckControllerBase<Article,Inte
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("artcK"+bean.getAtid())&&!reserved.isReservedBy("artcK"+bean.getAtid(),session.getId()))
 			return finish("",response,423);
-		Article origBean=((ArticleMapper)bMapper).get(bean.getAtid());
+		Article origBean=((ArticleMapper)bMapper).get(bean.getAtid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!artc_wa&&!origBean.getAtusid().equals(getUser(session)))
@@ -80,7 +80,7 @@ public class ArticleCheckController extends RestCheckControllerBase<Article,Inte
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("artcK"+atid))
 			return finish("",response,423);
-		Article origBean=((ArticleMapper)bMapper).get(atid);
+		Article origBean=((ArticleMapper)bMapper).get(atid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		if(!artc_wa&&!origBean.getAtusid().equals(getUser(session)))

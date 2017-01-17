@@ -56,7 +56,7 @@ public class WordvoteCheckController extends RestCheckControllerBase<Wordvote,In
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("wdvtK"+bean.getWvid())&&!reserved.isReservedBy("wdvtK"+bean.getWvid(),session.getId()))
 			return finish("",response,423);
-		Wordvote origBean=((WordvoteMapper)bMapper).get(bean.getWvid());
+		Wordvote origBean=((WordvoteMapper)bMapper).get(bean.getWvid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!wdvt_wa&&!origBean.getWvusid().equals(getUser(session)))
@@ -80,7 +80,7 @@ public class WordvoteCheckController extends RestCheckControllerBase<Wordvote,In
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("wdvtK"+wvid))
 			return finish("",response,423);
-		Wordvote origBean=((WordvoteMapper)bMapper).get(wvid);
+		Wordvote origBean=((WordvoteMapper)bMapper).get(wvid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		if(!wdvt_wa&&!origBean.getWvusid().equals(getUser(session)))
@@ -112,11 +112,11 @@ public class WordvoteCheckController extends RestCheckControllerBase<Wordvote,In
 	}
 	private List<List<String>> referencing(Wordvote bean)
 	{	List<List<String>> fields=new ArrayList<List<String>>();
-		if(!((WordvoteMapper)bMapper).referencingWvwaid(bean.getWvwaid()))
-		{	fields.add(java.util.Arrays.asList("wvwaid"));
-		}
 		if(!((WordvoteMapper)bMapper).referencingWvusid(bean.getWvusid()))
 		{	fields.add(java.util.Arrays.asList("wvusid"));
+		}
+		if(!((WordvoteMapper)bMapper).referencingWvwaid(bean.getWvwaid()))
+		{	fields.add(java.util.Arrays.asList("wvwaid"));
 		}
 		return fields;
 	}

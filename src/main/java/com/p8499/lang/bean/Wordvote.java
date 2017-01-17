@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 @JsonInclude((JsonInclude.Include.NON_NULL))
 public class Wordvote implements Bean
 {	public static final String TABLE="public.F1042";
+	public static final String VIEW="public.F1042";
 	public static final String NAME="Wordvote";
 	public static final String FIELD_WVID="WVID";
 	public static final String FIELD_WVWAID="WVWAID";

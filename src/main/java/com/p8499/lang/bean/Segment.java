@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 @JsonInclude((JsonInclude.Include.NON_NULL))
 public class Segment implements Bean
 {	public static final String TABLE="public.F1130";
+	public static final String VIEW="public.F1130";
 	public static final String NAME="Segment";
 	public static final String FIELD_TRASID="TRASID";
 	public static final String FIELD_TRPI="TRPI";

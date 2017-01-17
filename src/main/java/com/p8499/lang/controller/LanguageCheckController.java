@@ -56,7 +56,7 @@ public class LanguageCheckController extends RestCheckControllerBase<Language,St
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("langK"+bean.getLsid())&&!reserved.isReservedBy("langK"+bean.getLsid(),session.getId()))
 			return finish("",response,423);
-		Language origBean=((LanguageMapper)bMapper).get(bean.getLsid());
+		Language origBean=((LanguageMapper)bMapper).get(bean.getLsid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!((LanguageMapper)bMapper).unique(bean))
@@ -78,7 +78,7 @@ public class LanguageCheckController extends RestCheckControllerBase<Language,St
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("langK"+lsid))
 			return finish("",response,423);
-		Language origBean=((LanguageMapper)bMapper).get(lsid);
+		Language origBean=((LanguageMapper)bMapper).get(lsid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		List<List<String>> referencedErrors=referenced(origBean);

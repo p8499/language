@@ -56,7 +56,7 @@ public class WordCheckController extends RestCheckControllerBase<Word,Integer>
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("wordK"+bean.getWoid())&&!reserved.isReservedBy("wordK"+bean.getWoid(),session.getId()))
 			return finish("",response,423);
-		Word origBean=((WordMapper)bMapper).get(bean.getWoid());
+		Word origBean=((WordMapper)bMapper).get(bean.getWoid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!((WordMapper)bMapper).unique(bean))
@@ -78,7 +78,7 @@ public class WordCheckController extends RestCheckControllerBase<Word,Integer>
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("wordK"+woid))
 			return finish("",response,423);
-		Word origBean=((WordMapper)bMapper).get(woid);
+		Word origBean=((WordMapper)bMapper).get(woid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		List<List<String>> referencedErrors=referenced(origBean);

@@ -10,30 +10,33 @@ import javax.validation.constraints.Size;
 @JsonInclude((JsonInclude.Include.NON_NULL))
 public class Segmentvote implements Bean
 {	public static final String TABLE="public.F1132";
+	public static final String VIEW="public.F1132";
 	public static final String NAME="Segmentvote";
 	public static final String FIELD_TVID="TVID";
 	public static final String FIELD_TVTAID="TVTAID";
 	public static final String FIELD_TVSI="TVSI";
 	public static final String FIELD_TVUSID="TVUSID";
 	public static final String FIELD_TVPO="TVPO";
-	public static final String FIELD_TAUPDD="TAUPDD";
-	public static final String FIELD_TAUPDT="TAUPDT";
+	public static final String FIELD_TVUPDD="TVUPDD";
+	public static final String FIELD_TVUPDT="TVUPDT";
+	public static final Integer TVPO_NEGATIVE=-1;
+	public static final Integer TVPO_POSITIVE=1;
 	protected Integer tvid=null;
 	protected Integer tvtaid=null;
 	protected Integer tvsi=null;
 	protected String tvusid=null;
 	protected Integer tvpo=null;
-	protected String taupdd=null;
-	protected String taupdt=null;
+	protected String tvupdd=null;
+	protected String tvupdt=null;
 
-	public Segmentvote(Integer tvid,Integer tvtaid,Integer tvsi,String tvusid,Integer tvpo,String taupdd,String taupdt)
+	public Segmentvote(Integer tvid,Integer tvtaid,Integer tvsi,String tvusid,Integer tvpo,String tvupdd,String tvupdt)
 	{	this.tvid=tvid;
 		this.tvtaid=tvtaid;
 		this.tvsi=tvsi;
 		this.tvusid=tvusid;
 		this.tvpo=tvpo;
-		this.taupdd=taupdd;
-		this.taupdt=taupdt;
+		this.tvupdd=tvupdd;
+		this.tvupdt=tvupdt;
 	}
 	public Segmentvote()
 	{	
@@ -45,7 +48,7 @@ public class Segmentvote implements Bean
 	@Override
 	public Segmentvote clone()
 	{
-		return new Segmentvote(tvid,tvtaid,tvsi,tvusid,tvpo,taupdd,taupdt);
+		return new Segmentvote(tvid,tvtaid,tvsi,tvusid,tvpo,tvupdd,tvupdt);
 	}
 	@Null(groups={Add.class})
 	@NotNull(groups={Update.class})
@@ -100,21 +103,21 @@ public class Segmentvote implements Bean
 	
 	@Size(max=10)
 	//@SomeConstraint(groups={Add.class,Update.class})
-	public String getTaupdd()
-	{	return taupdd;
+	public String getTvupdd()
+	{	return tvupdd;
 	}
-	public Segmentvote setTaupdd(String taupdd)
-	{	this.taupdd=taupdd;
+	public Segmentvote setTvupdd(String tvupdd)
+	{	this.tvupdd=tvupdd;
 		return this;
 	}
 	
 	@Size(max=8)
 	//@SomeConstraint(groups={Add.class,Update.class})
-	public String getTaupdt()
-	{	return taupdt;
+	public String getTvupdt()
+	{	return tvupdt;
 	}
-	public Segmentvote setTaupdt(String taupdt)
-	{	this.taupdt=taupdt;
+	public Segmentvote setTvupdt(String tvupdt)
+	{	this.tvupdt=tvupdt;
 		return this;
 	}
 }

@@ -56,7 +56,7 @@ public class SegmentflowCheckController extends RestCheckControllerBase<Segmentf
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("sgflK"+bean.getTaid())&&!reserved.isReservedBy("sgflK"+bean.getTaid(),session.getId()))
 			return finish("",response,423);
-		Segmentflow origBean=((SegmentflowMapper)bMapper).get(bean.getTaid());
+		Segmentflow origBean=((SegmentflowMapper)bMapper).get(bean.getTaid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!sgfl_wa&&!origBean.getTausid().equals(getUser(session)))
@@ -80,7 +80,7 @@ public class SegmentflowCheckController extends RestCheckControllerBase<Segmentf
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("sgflK"+taid))
 			return finish("",response,423);
-		Segmentflow origBean=((SegmentflowMapper)bMapper).get(taid);
+		Segmentflow origBean=((SegmentflowMapper)bMapper).get(taid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		if(!sgfl_wa&&!origBean.getTausid().equals(getUser(session)))
@@ -102,7 +102,7 @@ public class SegmentflowCheckController extends RestCheckControllerBase<Segmentf
 	public void settMapper(ToolMapper tMapper)
 	{	super.settMapper(tMapper);
 	}
-	@Resource(name="SegmentflowMapper")
+	@Resource(name="segmentflowMapper")
 	public void setbMapper(BeanMapper<Segmentflow,Integer> bMapper)
 	{	super.setbMapper(bMapper);
 	}

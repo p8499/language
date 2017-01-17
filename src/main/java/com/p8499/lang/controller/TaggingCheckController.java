@@ -56,7 +56,7 @@ public class TaggingCheckController extends RestCheckControllerBase<Tagging,Inte
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("postK"+bean.getTgasid())&&!reserved.isReservedBy("postK"+bean.getTgasid(),session.getId()))
 			return finish("",response,423);
-		Tagging origBean=((TaggingMapper)bMapper).get(bean.getTgasid());
+		Tagging origBean=((TaggingMapper)bMapper).get(bean.getTgasid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!post_wa&&!origBean.getTgusid().equals(getUser(session)))
@@ -80,7 +80,7 @@ public class TaggingCheckController extends RestCheckControllerBase<Tagging,Inte
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("postK"+tgasid))
 			return finish("",response,423);
-		Tagging origBean=((TaggingMapper)bMapper).get(tgasid);
+		Tagging origBean=((TaggingMapper)bMapper).get(tgasid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		if(!post_wa&&!origBean.getTgusid().equals(getUser(session)))
@@ -112,11 +112,11 @@ public class TaggingCheckController extends RestCheckControllerBase<Tagging,Inte
 	}
 	private List<List<String>> referencing(Tagging bean)
 	{	List<List<String>> fields=new ArrayList<List<String>>();
-		if(!((TaggingMapper)bMapper).referencingTgasid(bean.getTgasid()))
-		{	fields.add(java.util.Arrays.asList("tgasid"));
-		}
 		if(!((TaggingMapper)bMapper).referencingTgusid(bean.getTgusid()))
 		{	fields.add(java.util.Arrays.asList("tgusid"));
+		}
+		if(!((TaggingMapper)bMapper).referencingTgasid(bean.getTgasid()))
+		{	fields.add(java.util.Arrays.asList("tgasid"));
 		}
 		return fields;
 	}

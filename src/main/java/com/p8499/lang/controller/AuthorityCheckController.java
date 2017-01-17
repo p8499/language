@@ -56,7 +56,7 @@ public class AuthorityCheckController extends RestCheckControllerBase<Authority,
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("authK"+bean.getAuid())&&!reserved.isReservedBy("authK"+bean.getAuid(),session.getId()))
 			return finish("",response,423);
-		Authority origBean=((AuthorityMapper)bMapper).get(bean.getAuid());
+		Authority origBean=((AuthorityMapper)bMapper).get(bean.getAuid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!((AuthorityMapper)bMapper).unique(bean))
@@ -78,7 +78,7 @@ public class AuthorityCheckController extends RestCheckControllerBase<Authority,
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("authK"+auid))
 			return finish("",response,423);
-		Authority origBean=((AuthorityMapper)bMapper).get(auid);
+		Authority origBean=((AuthorityMapper)bMapper).get(auid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		List<List<String>> referencedErrors=referenced(origBean);

@@ -56,7 +56,7 @@ public class CategoryCheckController extends RestCheckControllerBase<Category,In
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("cateK"+bean.getCgid())&&!reserved.isReservedBy("cateK"+bean.getCgid(),session.getId()))
 			return finish("",response,423);
-		Category origBean=((CategoryMapper)bMapper).get(bean.getCgid());
+		Category origBean=((CategoryMapper)bMapper).get(bean.getCgid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!((CategoryMapper)bMapper).unique(bean))
@@ -78,7 +78,7 @@ public class CategoryCheckController extends RestCheckControllerBase<Category,In
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("cateK"+cgid))
 			return finish("",response,423);
-		Category origBean=((CategoryMapper)bMapper).get(cgid);
+		Category origBean=((CategoryMapper)bMapper).get(cgid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		List<List<String>> referencedErrors=referenced(origBean);

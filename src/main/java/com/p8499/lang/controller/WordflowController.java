@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.p8499.mvc.BeanListener;
 import com.p8499.mvc.MD5Encryptor;
 import com.p8499.mvc.Reserved;
 import com.p8499.mvc.RestControllerBase;
 import com.p8499.mvc.database.Add;
-import com.p8499.mvc.database.BeanListener;
 import com.p8499.mvc.database.BeanMapper;
 import com.p8499.mvc.database.ToolMapper;
 import com.p8499.mvc.database.Update;
@@ -33,19 +33,20 @@ import com.p8499.lang.mapper.WordflowMapper;
 @RequestMapping(value="/api/wordflow",produces="application/json;charset=UTF-8")
 public class WordflowController extends RestControllerBase<Wordflow,WordflowMask,Integer>
 {	@RequestMapping(value="/{waid}",method=RequestMethod.GET)
-	public String get(HttpSession session,HttpServletRequest request,HttpServletResponse response,@PathVariable Integer waid) throws JsonProcessingException
+	public String get(HttpSession session,HttpServletRequest request,HttpServletResponse response,@PathVariable Integer waid,@RequestParam(required=false)String mask) throws IOException
 	{	if(getUser(session)==null)
 			return finish("",response,HttpURLConnection.HTTP_UNAUTHORIZED);
 		boolean wdfl_ra=checkSecurity(session,"wdfl_ra"),wdfl_ri=checkSecurity(session,"wdfl_ri");
 		if(!wdfl_ra&&!wdfl_ri)
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
-		Wordflow result=((WordflowMapper)bMapper).get(waid);
+		WordflowMask maskObj=mask==null?null:(WordflowMask)jackson.readValue(mask,WordflowMask.class);
+		Wordflow result=((WordflowMapper)bMapper).get(waid,maskObj);
 		if(!wdfl_ra&&!result.getWausid().equals(getUser(session)))
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		return finish(result==null?"":result,response,result==null?HttpURLConnection.HTTP_NOT_FOUND:HttpURLConnection.HTTP_OK);
 	}
 	@RequestMapping(method=RequestMethod.POST)
-	public String add(HttpSession session,HttpServletRequest request,HttpServletResponse response,@RequestBody @Validated({Add.class}) Wordflow bean,BindingResult result) throws JsonProcessingException
+	public String add(HttpSession session,HttpServletRequest request,HttpServletResponse response,@RequestBody @Validated({Add.class}) Wordflow bean,BindingResult result) throws IllegalStateException, IOException
 	{	if(result.hasErrors())
 			return finish(result.toString(),response,HttpURLConnection.HTTP_BAD_REQUEST);
 		if(getUser(session)==null)
@@ -61,23 +62,25 @@ public class WordflowController extends RestControllerBase<Wordflow,WordflowMask
 		bean.setWacrdt(new java.text.SimpleDateFormat("HH:mm:ss").format(new java.util.Date()));
 		bean.setWaupdd(new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()));
 		bean.setWaupdt(new java.text.SimpleDateFormat("HH:mm:ss").format(new java.util.Date()));
-		getListener().beforeAdd(bean);
+		if(!getListener().beforeAdd(bean))
+			return finish("",response,HttpURLConnection.HTTP_NOT_ACCEPTABLE);
 		((WordflowMapper)bMapper).add(bean);
 		getListener().afterAdd(bean);
 		return finish("",response,HttpURLConnection.HTTP_OK);
 	}
 	@RequestMapping(value="/{waid}",method=RequestMethod.PUT)
-	public String update(HttpSession session,HttpServletRequest request,HttpServletResponse response,@RequestBody @Validated({Update.class}) Wordflow bean,BindingResult result) throws JsonProcessingException
-	{	if(result.hasErrors())
+	public String update(HttpSession session,HttpServletRequest request,HttpServletResponse response,@PathVariable Integer waid,@RequestBody @Validated({Update.class}) Wordflow bean,BindingResult result,@RequestParam(required=false)String mask) throws IOException
+	{	WordflowMask maskObj=mask==null?null:(WordflowMask)jackson.readValue(mask,WordflowMask.class);
+		if(mask==null&&result.hasErrors()||mask!=null&&maskObj.getWaid()&&result.getFieldErrorCount("waid")>0||mask!=null&&maskObj.getWawoid()&&result.getFieldErrorCount("wawoid")>0||mask!=null&&maskObj.getWasi()&&result.getFieldErrorCount("wasi")>0||mask!=null&&maskObj.getWapt()&&result.getFieldErrorCount("wapt")>0||mask!=null&&maskObj.getWast()&&result.getFieldErrorCount("wast")>0||mask!=null&&maskObj.getWausid()&&result.getFieldErrorCount("wausid")>0||mask!=null&&maskObj.getWacrdd()&&result.getFieldErrorCount("wacrdd")>0||mask!=null&&maskObj.getWacrdt()&&result.getFieldErrorCount("wacrdt")>0||mask!=null&&maskObj.getWaupdd()&&result.getFieldErrorCount("waupdd")>0||mask!=null&&maskObj.getWaupdt()&&result.getFieldErrorCount("waupdt")>0)
 			return finish(result.toString(),response,HttpURLConnection.HTTP_BAD_REQUEST);
 		if(getUser(session)==null)
 			return finish("",response,HttpURLConnection.HTTP_UNAUTHORIZED);
 		boolean wdfl_wa=checkSecurity(session,"wdfl_wa"),wdfl_wi=checkSecurity(session,"wdfl_wi");
 		if(!wdfl_wa&&!wdfl_wi)
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
-		if(reserved.isReserved("wdflK"+bean.getWaid())&&!reserved.isReservedBy("wdflK"+bean.getWaid(),session.getId()))
+		if(reserved.isReserved("wdflK"+waid)&&!reserved.isReservedBy("wdflK"+waid,session.getId()))
 			return finish("",response,423);
-		Wordflow origBean=((WordflowMapper)bMapper).get(bean.getWaid());
+		Wordflow origBean=((WordflowMapper)bMapper).get(bean.getWaid(),null);
 		if(!wdfl_wa&&!origBean.getWausid().equals(getUser(session)))
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(!wdfl_wa)
@@ -86,9 +89,10 @@ public class WordflowController extends RestControllerBase<Wordflow,WordflowMask
 		bean.setWacrdt(origBean.getWacrdt());
 		bean.setWaupdd(new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()));
 		bean.setWaupdt(new java.text.SimpleDateFormat("HH:mm:ss").format(new java.util.Date()));
-		getListener().beforeUpdate(bean);
-		((WordflowMapper)bMapper).update(bean);
-		getListener().afterUpdate(bean);
+		if(!getListener().beforeUpdate(origBean,bean,maskObj))
+			return finish("",response,HttpURLConnection.HTTP_NOT_ACCEPTABLE);
+		((WordflowMapper)bMapper).update(bean,maskObj);
+		getListener().afterUpdate(origBean,bean,maskObj);
 		return finish("",response,HttpURLConnection.HTTP_OK);
 	}
 	@RequestMapping(value="/{waid}",method=RequestMethod.DELETE)
@@ -100,24 +104,26 @@ public class WordflowController extends RestControllerBase<Wordflow,WordflowMask
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("wdflK"+waid))
 			return finish("",response,423);
-		Wordflow origBean=((WordflowMapper)bMapper).get(waid);
+		Wordflow origBean=((WordflowMapper)bMapper).get(waid,null);
 		if(!wdfl_wa&&!origBean.getWausid().equals(getUser(session)))
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
-		getListener().beforeDelete(waid);
+		if(!getListener().beforeDelete(origBean))
+			return finish("",response,HttpURLConnection.HTTP_NOT_ACCEPTABLE);
 		boolean success=((WordflowMapper)bMapper).delete(waid);
-		getListener().afterDelete(waid);
+		getListener().afterDelete(origBean);
 		return finish("",response,success?HttpURLConnection.HTTP_OK:HttpURLConnection.HTTP_NO_CONTENT);
 	}
 	@RequestMapping(method=RequestMethod.GET)
-	public String query(HttpSession session,HttpServletRequest request,HttpServletResponse response,@RequestParam(required=false) String filter,@RequestParam(required=false) String orderBy,@RequestHeader(required=false,name="Range",defaultValue="items=0-9") String range) throws IOException
+	public String query(HttpSession session,HttpServletRequest request,HttpServletResponse response,@RequestParam(required=false) String filter,@RequestParam(required=false) String orderBy,@RequestHeader(required=false,name="Range",defaultValue="items=0-9") String range,@RequestParam(required=false)String mask) throws IOException
 	{	if(getUser(session)==null)
 			return finish("",response,HttpURLConnection.HTTP_UNAUTHORIZED);
 		boolean wdfl_ra=checkSecurity(session,"wdfl_ra"),wdfl_ri=checkSecurity(session,"wdfl_ri");
 		if(!wdfl_ra&&!wdfl_ri)
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
+		WordflowMask maskObj=mask==null?new WordflowMask().all(true):(WordflowMask)jackson.readValue(mask,WordflowMask.class);
 		if(!wdfl_ra)
-			return finish(queryRange(response,filter,orderBy,range,"wausid",getUser(session)),response,HttpURLConnection.HTTP_OK);
-		return finish(queryRange(response,filter,orderBy,range),response,HttpURLConnection.HTTP_OK);
+			return finish(queryRange(response,filter,orderBy,range,"wausid",getUser(session),maskObj),response,HttpURLConnection.HTTP_OK);
+		return finish(queryRange(response,filter,orderBy,range,maskObj),response,HttpURLConnection.HTTP_OK);
 	}
 	@Resource(name="jackson")
 	public void setJackson(ObjectMapper jackson)
@@ -140,7 +146,7 @@ public class WordflowController extends RestControllerBase<Wordflow,WordflowMask
 	{	super.setReserved(reserved);
 	}
 	@Resource(name="wordflowListener")
-	public void setListener(BeanListener<Wordflow,WordflowMask,Integer> listener)
+	public void setListener(BeanListener<Wordflow,WordflowMask> listener)
 	{	super.setListener(listener);
 	}
 }

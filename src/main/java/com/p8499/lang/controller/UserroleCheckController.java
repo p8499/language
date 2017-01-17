@@ -56,7 +56,7 @@ public class UserroleCheckController extends RestCheckControllerBase<Userrole,In
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("usrlK"+bean.getUrid())&&!reserved.isReservedBy("usrlK"+bean.getUrid(),session.getId()))
 			return finish("",response,423);
-		Userrole origBean=((UserroleMapper)bMapper).get(bean.getUrid());
+		Userrole origBean=((UserroleMapper)bMapper).get(bean.getUrid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!((UserroleMapper)bMapper).unique(bean))
@@ -78,7 +78,7 @@ public class UserroleCheckController extends RestCheckControllerBase<Userrole,In
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("usrlK"+urid))
 			return finish("",response,423);
-		Userrole origBean=((UserroleMapper)bMapper).get(urid);
+		Userrole origBean=((UserroleMapper)bMapper).get(urid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		List<List<String>> referencedErrors=referenced(origBean);
@@ -108,11 +108,11 @@ public class UserroleCheckController extends RestCheckControllerBase<Userrole,In
 	}
 	private List<List<String>> referencing(Userrole bean)
 	{	List<List<String>> fields=new ArrayList<List<String>>();
-		if(!((UserroleMapper)bMapper).referencingUrusid(bean.getUrusid()))
-		{	fields.add(java.util.Arrays.asList("urusid"));
-		}
 		if(!((UserroleMapper)bMapper).referencingUrrlid(bean.getUrrlid()))
 		{	fields.add(java.util.Arrays.asList("urrlid"));
+		}
+		if(!((UserroleMapper)bMapper).referencingUrusid(bean.getUrusid()))
+		{	fields.add(java.util.Arrays.asList("urusid"));
 		}
 		return fields;
 	}

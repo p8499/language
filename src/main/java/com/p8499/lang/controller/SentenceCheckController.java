@@ -56,7 +56,7 @@ public class SentenceCheckController extends RestCheckControllerBase<Sentence,In
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("sentK"+bean.getAsid())&&!reserved.isReservedBy("sentK"+bean.getAsid(),session.getId()))
 			return finish("",response,423);
-		Sentence origBean=((SentenceMapper)bMapper).get(bean.getAsid());
+		Sentence origBean=((SentenceMapper)bMapper).get(bean.getAsid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!sent_wa&&!origBean.getAsusid().equals(getUser(session)))
@@ -80,7 +80,7 @@ public class SentenceCheckController extends RestCheckControllerBase<Sentence,In
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("sentK"+asid))
 			return finish("",response,423);
-		Sentence origBean=((SentenceMapper)bMapper).get(asid);
+		Sentence origBean=((SentenceMapper)bMapper).get(asid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		if(!sent_wa&&!origBean.getAsusid().equals(getUser(session)))

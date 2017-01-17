@@ -56,7 +56,7 @@ public class ChunkcriteriaCheckController extends RestCheckControllerBase<Chunkc
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("ckctK"+bean.getCcid())&&!reserved.isReservedBy("ckctK"+bean.getCcid(),session.getId()))
 			return finish("",response,423);
-		Chunkcriteria origBean=((ChunkcriteriaMapper)bMapper).get(bean.getCcid());
+		Chunkcriteria origBean=((ChunkcriteriaMapper)bMapper).get(bean.getCcid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!((ChunkcriteriaMapper)bMapper).unique(bean))
@@ -78,7 +78,7 @@ public class ChunkcriteriaCheckController extends RestCheckControllerBase<Chunkc
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("ckctK"+ccid))
 			return finish("",response,423);
-		Chunkcriteria origBean=((ChunkcriteriaMapper)bMapper).get(ccid);
+		Chunkcriteria origBean=((ChunkcriteriaMapper)bMapper).get(ccid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		List<List<String>> referencedErrors=referenced(origBean);

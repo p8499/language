@@ -56,7 +56,7 @@ public class SegmentCheckController extends RestCheckControllerBase<Segment,Inte
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("sgmtK"+bean.getTrasid())&&!reserved.isReservedBy("sgmtK"+bean.getTrasid(),session.getId()))
 			return finish("",response,423);
-		Segment origBean=((SegmentMapper)bMapper).get(bean.getTrasid());
+		Segment origBean=((SegmentMapper)bMapper).get(bean.getTrasid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!sgmt_wa&&!origBean.getTrusid().equals(getUser(session)))
@@ -80,7 +80,7 @@ public class SegmentCheckController extends RestCheckControllerBase<Segment,Inte
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("sgmtK"+trasid))
 			return finish("",response,423);
-		Segment origBean=((SegmentMapper)bMapper).get(trasid);
+		Segment origBean=((SegmentMapper)bMapper).get(trasid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		if(!sgmt_wa&&!origBean.getTrusid().equals(getUser(session)))

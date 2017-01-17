@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 @JsonInclude((JsonInclude.Include.NON_NULL))
 public class Category implements Bean
 {	public static final String TABLE="public.F1030";
+	public static final String VIEW="public.F1030";
 	public static final String NAME="Category";
 	public static final String FIELD_CGID="CGID";
 	public static final String FIELD_CGLSID="CGLSID";

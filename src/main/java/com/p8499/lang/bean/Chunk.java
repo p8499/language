@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 @JsonInclude((JsonInclude.Include.NON_NULL))
 public class Chunk implements Bean
 {	public static final String TABLE="public.F1020";
+	public static final String VIEW="public.F1020";
 	public static final String NAME="Chunk";
 	public static final String FIELD_CPID="CPID";
 	public static final String FIELD_CPLSID="CPLSID";

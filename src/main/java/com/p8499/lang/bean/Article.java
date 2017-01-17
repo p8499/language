@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 @JsonInclude((JsonInclude.Include.NON_NULL))
 public class Article implements Bean
 {	public static final String TABLE="public.F1110";
+	public static final String VIEW="public.V1110";
 	public static final String NAME="Article";
 	public static final String FIELD_ATID="ATID";
 	public static final String FIELD_ATCGID="ATCGID";
@@ -18,7 +19,9 @@ public class Article implements Bean
 	public static final String FIELD_ATUSID="ATUSID";
 	public static final String FIELD_ATUPDD="ATUPDD";
 	public static final String FIELD_ATUPDT="ATUPDT";
+	public static final String FIELD_ATBRF="ATBRF";
 	public static final String FIELD_ATCGNAME="ATCGNAME";
+	public static final String FIELD_ATUSNAME="ATUSNAME";
 	public static final String FIELD_ATCSA="ATCSA";
 	public static final String FIELD_ATCSB="ATCSB";
 	public static final String FIELD_ATCSC="ATCSC";
@@ -32,7 +35,9 @@ public class Article implements Bean
 	protected String atusid=null;
 	protected String atupdd=null;
 	protected String atupdt=null;
+	protected String atbrf=null;
 	protected String atcgname=null;
+	protected String atusname=null;
 	protected Integer atcsa=null;
 	protected Integer atcsb=null;
 	protected Integer atcsc=null;
@@ -40,7 +45,7 @@ public class Article implements Bean
 	protected Integer atcse=null;
 	protected Integer atcsf=null;
 
-	public Article(Integer atid,Integer atcgid,Integer atsi,String atname,String atusid,String atupdd,String atupdt,String atcgname,Integer atcsa,Integer atcsb,Integer atcsc,Integer atcsd,Integer atcse,Integer atcsf)
+	public Article(Integer atid,Integer atcgid,Integer atsi,String atname,String atusid,String atupdd,String atupdt,String atbrf,String atcgname,String atusname,Integer atcsa,Integer atcsb,Integer atcsc,Integer atcsd,Integer atcse,Integer atcsf)
 	{	this.atid=atid;
 		this.atcgid=atcgid;
 		this.atsi=atsi;
@@ -48,7 +53,9 @@ public class Article implements Bean
 		this.atusid=atusid;
 		this.atupdd=atupdd;
 		this.atupdt=atupdt;
+		this.atbrf=atbrf;
 		this.atcgname=atcgname;
+		this.atusname=atusname;
 		this.atcsa=atcsa;
 		this.atcsb=atcsb;
 		this.atcsc=atcsc;
@@ -66,7 +73,7 @@ public class Article implements Bean
 	@Override
 	public Article clone()
 	{
-		return new Article(atid,atcgid,atsi,atname,atusid,atupdd,atupdt,atcgname,atcsa,atcsb,atcsc,atcsd,atcse,atcsf);
+		return new Article(atid,atcgid,atsi,atname,atusid,atupdd,atupdt,atbrf,atcgname,atusname,atcsa,atcsb,atcsc,atcsd,atcse,atcsf);
 	}
 	@Null(groups={Add.class})
 	@NotNull(groups={Update.class})
@@ -140,7 +147,16 @@ public class Article implements Bean
 		return this;
 	}
 	
-	@NotNull(groups={Add.class,Update.class})
+	@Size(max=96)
+	//@SomeConstraint(groups={Add.class,Update.class})
+	public String getAtbrf()
+	{	return atbrf;
+	}
+	public Article setAtbrf(String atbrf)
+	{	this.atbrf=atbrf;
+		return this;
+	}
+	
 	@Size(max=32)
 	//@SomeConstraint(groups={Add.class,Update.class})
 	public String getAtcgname()
@@ -151,7 +167,16 @@ public class Article implements Bean
 		return this;
 	}
 	
-	@NotNull(groups={Add.class,Update.class})
+	@Size(max=32)
+	//@SomeConstraint(groups={Add.class,Update.class})
+	public String getAtusname()
+	{	return atusname;
+	}
+	public Article setAtusname(String atusname)
+	{	this.atusname=atusname;
+		return this;
+	}
+	
 	//@SomeConstraint(groups={Add.class,Update.class})
 	public Integer getAtcsa()
 	{	return atcsa;
@@ -161,7 +186,6 @@ public class Article implements Bean
 		return this;
 	}
 	
-	@NotNull(groups={Add.class,Update.class})
 	//@SomeConstraint(groups={Add.class,Update.class})
 	public Integer getAtcsb()
 	{	return atcsb;
@@ -171,7 +195,6 @@ public class Article implements Bean
 		return this;
 	}
 	
-	@NotNull(groups={Add.class,Update.class})
 	//@SomeConstraint(groups={Add.class,Update.class})
 	public Integer getAtcsc()
 	{	return atcsc;
@@ -181,7 +204,6 @@ public class Article implements Bean
 		return this;
 	}
 	
-	@NotNull(groups={Add.class,Update.class})
 	//@SomeConstraint(groups={Add.class,Update.class})
 	public Integer getAtcsd()
 	{	return atcsd;
@@ -191,7 +213,6 @@ public class Article implements Bean
 		return this;
 	}
 	
-	@NotNull(groups={Add.class,Update.class})
 	//@SomeConstraint(groups={Add.class,Update.class})
 	public Integer getAtcse()
 	{	return atcse;
@@ -201,7 +222,6 @@ public class Article implements Bean
 		return this;
 	}
 	
-	@NotNull(groups={Add.class,Update.class})
 	//@SomeConstraint(groups={Add.class,Update.class})
 	public Integer getAtcsf()
 	{	return atcsf;

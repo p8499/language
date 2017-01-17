@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 @JsonInclude((JsonInclude.Include.NON_NULL))
 public class Pronounce implements Bean
 {	public static final String TABLE="public.F1011";
+	public static final String VIEW="public.F1011";
 	public static final String NAME="Pronounce";
 	public static final String FIELD_PNID="PNID";
 	public static final String FIELD_PNLSID="PNLSID";

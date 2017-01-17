@@ -56,7 +56,7 @@ public class SegmentvoteCheckController extends RestCheckControllerBase<Segmentv
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("sgvtK"+bean.getTvid())&&!reserved.isReservedBy("sgvtK"+bean.getTvid(),session.getId()))
 			return finish("",response,423);
-		Segmentvote origBean=((SegmentvoteMapper)bMapper).get(bean.getTvid());
+		Segmentvote origBean=((SegmentvoteMapper)bMapper).get(bean.getTvid(),null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NOT_FOUND);
 		if(!sgvt_wa&&!origBean.getTvusid().equals(getUser(session)))
@@ -80,7 +80,7 @@ public class SegmentvoteCheckController extends RestCheckControllerBase<Segmentv
 			return finish("",response,HttpURLConnection.HTTP_FORBIDDEN);
 		if(reserved.isReserved("sgvtK"+tvid))
 			return finish("",response,423);
-		Segmentvote origBean=((SegmentvoteMapper)bMapper).get(tvid);
+		Segmentvote origBean=((SegmentvoteMapper)bMapper).get(tvid,null);
 		if(origBean==null)
 			return finish("",response,HttpURLConnection.HTTP_NO_CONTENT);
 		if(!sgvt_wa&&!origBean.getTvusid().equals(getUser(session)))
@@ -102,7 +102,7 @@ public class SegmentvoteCheckController extends RestCheckControllerBase<Segmentv
 	public void settMapper(ToolMapper tMapper)
 	{	super.settMapper(tMapper);
 	}
-	@Resource(name="SegmentvoteMapper")
+	@Resource(name="segmentvoteMapper")
 	public void setbMapper(BeanMapper<Segmentvote,Integer> bMapper)
 	{	super.setbMapper(bMapper);
 	}

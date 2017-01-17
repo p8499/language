@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 @JsonInclude((JsonInclude.Include.NON_NULL))
 public class Tagging implements Bean
 {	public static final String TABLE="public.F1140";
+	public static final String VIEW="public.F1140";
 	public static final String NAME="Tagging";
 	public static final String FIELD_TGASID="TGASID";
 	public static final String FIELD_TGCONT="TGCONT";
